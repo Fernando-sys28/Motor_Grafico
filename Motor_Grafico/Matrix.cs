@@ -25,7 +25,7 @@ namespace Motor_Grafico
             });
         }
 
-        public  Matrix MulMatrix(Matrix m1, Matrix m2)
+        public static Matrix MulMatrix(Matrix m1, Matrix m2)
         {
             double[,] M1 = m1._values;
             double[,] M2 = m2._values;
@@ -44,7 +44,7 @@ namespace Motor_Grafico
             return new Matrix(result);
         }
 
-        public Matrix RotationX(double angle)
+        public static Matrix RotationX(double angle)
         {
             double sin = Math.Sin(angle);
             double cos = Math.Cos(angle);
@@ -57,7 +57,7 @@ namespace Motor_Grafico
             });
         }
 
-        public  Matrix RotationY(double angle)
+        public static Matrix RotationY(double angle)
         {
             double sin = Math.Sin(angle);
             double cos = Math.Cos(angle);

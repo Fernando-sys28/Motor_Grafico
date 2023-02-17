@@ -17,10 +17,11 @@ namespace Motor_Grafico
         Graphics g;
         Figures figure;
         Scene scena;
-        double angle;
-        private Matrix rotationMatrix;
+        double angle=45;
+        Matrix rotationMatrix;
         double[,] matrix;
         Matrix matrix_XYZ;
+
         public Form1()
         {
             InitializeComponent();
@@ -40,16 +41,6 @@ namespace Motor_Grafico
 
             //angle = Math.PI / 50;
 
-            for (int i = 0; i < figure.vertices.Count; i++)
-            {
-                matrix = new double[,] { { figure.vertices[i].X }, { figure.vertices[i].Y }, { figure.vertices[i].Z } };
-                matrix_XYZ = new Matrix(matrix);
-            }
-
-            Console.WriteLine(matrix_XYZ);
-            Draw();
-
-
         }
 
 
@@ -60,12 +51,21 @@ namespace Motor_Grafico
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            //Scene.Figures.Add(figure);
+           /* //Scene.Figures.Add(figure);
+            Matrix rotationMatrix = Matrix.RotationY(angle);
+            figure.Rotate(rotationMatrix);
+            rotationMatrix = Matrix.RotationX(angle);
+            figure.Rotate(rotationMatrix);
+            rotationMatrix = Matrix.RotationZ(angle);
+            figure.Rotate(rotationMatrix);
 
-           
+            Draw();
+
+            angle += Math.PI / 50;*/
+
 
         }
-        public void Draw()
+       /* public void Draw()
         {
             for (int i = 0; i < figure.vertices.Count; i++)
             {
@@ -84,7 +84,7 @@ namespace Motor_Grafico
 
                 g.DrawLine(Pens.White, a2, b2);
             }
-        }
+        }*/
 
 
 

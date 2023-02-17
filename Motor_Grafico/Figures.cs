@@ -10,25 +10,36 @@ namespace Motor_Grafico
     public class Figures
     {
 
-        public List<Vertex> vertices;
+        public Vertex[] Vertices;
 
         public Figures() {
 
-            vertices = new List<Vertex>();      
+            Vertices = new Vertex[8];
         }
+
+
 
         public void AddVertex(double x, double y, double z)
         {
-            vertices.Add(new Vertex
+            Vertices = new Vertex[]
             {
-                X = x,
-                Y = y,
-                Z = z
-               
-            }) ;
+                new Vertex(x, y, z),
+            } ;
 
             
         }
+
+        /*public void Rotate(Matrix matrix)
+        {
+            foreach (Vertex vertex in vertices)
+            {
+                double[,] point = new double[,] { { vertex.X }, { vertex.Y }, { vertex.Z } };
+                double[,] result = Matrix.MulMatrix(matrix, new Matrix(point));
+                vertex.X = result[0, 0];
+                vertex.Y = result[1, 0];
+                vertex.Z = result[2, 0];
+            }
+        }*/
 
     }
 }
