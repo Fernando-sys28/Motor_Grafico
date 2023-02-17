@@ -9,16 +9,17 @@ namespace Motor_Grafico
 {
     public class Vertex
     {
-        float X, Y, Z;
-        public Vertex(float x, float y, float z)
+        public double X { get; set; }
+        public double Y { get; set; }
+        public double Z { get; set; }
+
+
+
+        public PointF ConvertToPointF(double x, double y, double z)
         {
-            X= x;
-            Y= y;
-            Z= z;
+            return new PointF((float)x, (float)y);
+
         }
-
-
-
-    }   
+    }
 
 }

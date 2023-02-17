@@ -10,24 +10,25 @@ namespace Motor_Grafico
     public class Figures
     {
 
-        public Vertex[] Vertices;
+        public List<Vertex> vertices;
 
         public Figures() {
 
-            Vertices = new Vertex[]
-            {
-                new Vertex(-1, -1, -1),
-                new Vertex(-1, -1, 1),
-                new Vertex(1, -1, 1),
-                new Vertex(1, -1, -1),
-                new Vertex(-1, 1, -1),
-                new Vertex(-1, 1, 1),
-                new Vertex(1, 1, 1),
-                new Vertex(1, 1, -1)
-            };
+            vertices = new List<Vertex>();      
         }
 
+        public void AddVertex(double x, double y, double z)
+        {
+            vertices.Add(new Vertex
+            {
+                X = x,
+                Y = y,
+                Z = z
+               
+            }) ;
 
+            
+        }
 
     }
 }
