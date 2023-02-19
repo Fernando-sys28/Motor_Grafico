@@ -20,10 +20,14 @@ namespace Motor_Grafico
         Figures cubo;
         Scene scena;
         double[,] RotationX,RotationY,RotationZ;
-
         Vertex[] vertices = new Vertex[8];
         double angle1=0, angle2 = 0, angle3 = 0;
-        Vertex a, b, c, d, e, f, g, h;
+        bool RX=false;
+        bool RY=false;
+        bool RZ=false;
+        bool RXYZ=false;
+
+        
         public Form1()
         {
             InitializeComponent();
@@ -47,40 +51,89 @@ namespace Motor_Grafico
 
         private void timer1_Tick(object sender, EventArgs j)
         {
-
-            // Actualizar ángulos de rotación
-
-            
             if (angle1 == 0 & angle2 == 0 & angle3 == 0)
             {
                 angle1 += 1f / 57.2958f;
                 angle2 += 2f / 57.2958f;
                 angle3 += 3f / 57.2958f;
-
             }
 
-            RotationZ = Matrix.RotationZ(angle3);
-            RotationX = Matrix.RotationY(angle1);
-            RotationY = Matrix.RotationX(angle2);
-            
 
-            for (int i = 0; i < cubo.Vertices.Length; i++)
+            if (RX== true)
             {
-                Vertex vertexX = cubo.Vertices[i];
-                Vertex vertexY = cubo.Vertices[i];
-                Vertex vertexZ = cubo.Vertices[i];
 
-                vertexZ = Matrix.multiMatrix(vertexZ, RotationZ);
-                vertexX = Matrix.multiMatrix(vertexX, RotationX);                                         
-                vertexY = Matrix.multiMatrix(vertexY, RotationY);
+                RotationX = Matrix.RotationX(angle1);
 
-                cubo.Vertices[i] = vertexZ;
-                cubo.Vertices[i] = vertexX;                                           
-                cubo.Vertices[i] = vertexY;
 
-                
+                for (int i = 0; i < cubo.Vertices.Length; i++)
+                {
+                    Vertex vertexX = cubo.Vertices[i];
+
+                    vertexX = Matrix.multiMatrix(vertexX, RotationX);
+                    cubo.Vertices[i] = vertexX;
+
+                }
+                graphic.Clear(Color.Transparent);
             }
-            
+
+
+            if (RY == true)
+            {
+
+                RotationY = Matrix.RotationY(angle1);
+
+                for (int i = 0; i < cubo.Vertices.Length; i++)
+                {
+                    Vertex vertexY = cubo.Vertices[i];
+
+                    vertexY = Matrix.multiMatrix(vertexY, RotationY);
+                    cubo.Vertices[i] = vertexY;
+
+                }
+                graphic.Clear(Color.Transparent);
+            }
+
+            if (RZ == true)
+            {
+
+                RotationZ = Matrix.RotationZ(angle1);
+
+                for (int i = 0; i < cubo.Vertices.Length; i++)
+                {
+                    Vertex vertexZ = cubo.Vertices[i];
+
+                    vertexZ = Matrix.multiMatrix(vertexZ, RotationZ);
+                    cubo.Vertices[i] = vertexZ;
+                }
+                graphic.Clear(Color.Transparent);
+
+            }
+
+            if (RXYZ == true)
+            {
+               
+                 RotationX = Matrix.RotationX(angle1);
+                 RotationY = Matrix.RotationY(angle2);
+                 RotationZ = Matrix.RotationZ(angle3);
+
+                for (int i = 0; i < cubo.Vertices.Length; i++)
+
+                 {
+                     Vertex vertexX = cubo.Vertices[i];
+                     Vertex vertexY = cubo.Vertices[i];
+                     Vertex vertexZ = cubo.Vertices[i];
+
+                     vertexX = Matrix.multiMatrix(vertexX, RotationX); 
+                     vertexY = Matrix.multiMatrix(vertexY, RotationY);
+                     vertexZ = Matrix.multiMatrix(vertexZ, RotationZ);
+                    
+                     cubo.Vertices[i] = vertexX;
+                     cubo.Vertices[i] = vertexY;                  
+                     cubo.Vertices[i] = vertexZ;
+                    
+                }
+            }
+
             graphic.Clear(Color.Transparent);
             Draw(cubo.Vertices[0], cubo.Vertices[1]);
             Draw(cubo.Vertices[1], cubo.Vertices[2]);
@@ -115,5 +168,69 @@ namespace Motor_Grafico
              graphic.DrawLine(Pens.White, a2, b2);        
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            RX = true;
+            RY = false;
+            RZ = false;
+            RXYZ = false;
+            vertices[0] = new Vertex(-50, 50, -50);
+            vertices[1] = new Vertex(50, 50, -50);
+            vertices[2] = new Vertex(50, -50, -50);
+            vertices[3] = new Vertex(-50, -50, -50);
+            vertices[4] = new Vertex(-50, -50, 50);
+            vertices[5] = new Vertex(50, -50, 50);
+            vertices[6] = new Vertex(50, 50, 50);
+            vertices[7] = new Vertex(-50, 50, 50);
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            RX = false;
+            RY = true;
+            RZ = false;
+            RXYZ = false;
+
+            vertices[0] = new Vertex(-50, 50, -50);
+            vertices[1] = new Vertex(50, 50, -50);
+            vertices[2] = new Vertex(50, -50, -50);
+            vertices[3] = new Vertex(-50, -50, -50);
+            vertices[4] = new Vertex(-50, -50, 50);
+            vertices[5] = new Vertex(50, -50, 50);
+            vertices[6] = new Vertex(50, 50, 50);
+            vertices[7] = new Vertex(-50, 50, 50);
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            RX = false;
+            RY = false;
+            RZ = true;
+            RXYZ = false;
+
+            vertices[0] = new Vertex(-50, 50, -50);
+            vertices[1] = new Vertex(50, 50, -50);
+            vertices[2] = new Vertex(50, -50, -50);
+            vertices[3] = new Vertex(-50, -50, -50);
+            vertices[4] = new Vertex(-50, -50, 50);
+            vertices[5] = new Vertex(50, -50, 50);
+            vertices[6] = new Vertex(50, 50, 50);
+            vertices[7] = new Vertex(-50, 50, 50);
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            RX = false;
+            RY = false;
+            RZ = false;
+            RXYZ = true;
+
+            vertices[0] = new Vertex(-50, 50, -50);
+            vertices[1] = new Vertex(50, 50, -50);
+            vertices[2] = new Vertex(50, -50, -50);
+            vertices[3] = new Vertex(-50, -50, -50);
+            vertices[4] = new Vertex(-50, -50, 50);
+            vertices[5] = new Vertex(50, -50, 50);
+            vertices[6] = new Vertex(50, 50, 50);
+            vertices[7] = new Vertex(-50, 50, 50);
+        }
     }
 }
