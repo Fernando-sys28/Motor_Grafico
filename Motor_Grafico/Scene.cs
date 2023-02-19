@@ -11,10 +11,11 @@ namespace Motor_Grafico
     public class Scene
     {
 
-        public static List<Figures> Figures;
-        public Scene()
+        public static List<Figures> Figures = new List<Figures>();
+        public Scene(Figures figura)
         {
-            Figures = new List<Figures>();
+            Figures.Add(figura);
+
         }
     }
 }

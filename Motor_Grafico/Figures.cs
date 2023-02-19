@@ -11,10 +11,12 @@ namespace Motor_Grafico
     {
 
         public Vertex[] Vertices;
+        public Vertex[] nuevosVertices;
 
         public Figures(Vertex[] inputVertices) {
 
             Vertices = inputVertices;
+            nuevosVertices = inputVertices;
         }
 
 

@@ -20,7 +20,7 @@ namespace Motor_Grafico
             Z = z;
         }
 
-        public PointF ConvertToPointF(double x, double y, double z)
+        public PointF ConvertToPointF(double x, double y)
         {
             return new PointF((float)x, (float)y);
 
