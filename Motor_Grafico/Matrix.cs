@@ -24,13 +24,13 @@ namespace Motor_Grafico
             return new Vertex(x,y,z);
         }
 
-        public static Vertex multiVector(Vertex v1, Vertex v2, Vertex v3)
+        public static Vertex multiMatrix3D(Vertex vertice, double[,] M)
         {
-            double x = v1.X * v2.X * v3.X + v1.Y * v2.Y * v3.Y  + v1.Z * v2.Z* v3.Z ;
-            double y = v1.X * v2.X * v3.X + v1.Y * v2.Y * v3.Y  + v1.Z * v2.Z* v3.Z ;
-            double z = v1.X * v2.X * v3.X + v1.Y * v2.Y * v3.Y  + v1.Z * v2.Z* v3.Z ;
+            vertice.X = (M[0, 0] * vertice.X) + (M[1, 0] * vertice.Y) + (M[2, 0] * vertice.Z);
+            vertice.Y = (M[0, 1] * vertice.X) + (M[1, 1] * vertice.Y) + (M[2, 1] * vertice.Z);
+            vertice.Z = (M[0, 2] * vertice.X) + (M[1, 2] * vertice.Y) + (M[2, 2] * vertice.Z);
 
-            return new Vertex(x, y, z);
+            return vertice;
         }
 
         public static double[,] RotationX(double angle)

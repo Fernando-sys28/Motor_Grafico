@@ -54,9 +54,10 @@ namespace Motor_Grafico
             if (angle1 == 0 & angle2 == 0 & angle3 == 0)
             {
                 angle1 += 1f / 57.2958f;
-                angle2 += 2f / 57.2958f;
-                angle3 += 3f / 57.2958f;
+                angle2 += 1f / 57.2958f;
+                angle3 += 1f / 57.2958f;
             }
+            
 
 
             if (RX== true)
@@ -119,17 +120,17 @@ namespace Motor_Grafico
                 for (int i = 0; i < cubo.Vertices.Length; i++)
 
                  {
-                     Vertex vertexX = cubo.Vertices[i];
-                     Vertex vertexY = cubo.Vertices[i];
-                     Vertex vertexZ = cubo.Vertices[i];
+                    Vertex vertexY = cubo.Vertices[i];
+                    Vertex vertexX = cubo.Vertices[i];                    
+                    Vertex vertexZ = cubo.Vertices[i];
 
-                     vertexX = Matrix.multiMatrix(vertexX, RotationX); 
-                     vertexY = Matrix.multiMatrix(vertexY, RotationY);
-                     vertexZ = Matrix.multiMatrix(vertexZ, RotationZ);
-                    
-                     cubo.Vertices[i] = vertexX;
-                     cubo.Vertices[i] = vertexY;                  
-                     cubo.Vertices[i] = vertexZ;
+                    vertexX = Matrix.multiMatrix3D(vertexX, RotationX);
+                    vertexY = Matrix.multiMatrix3D(vertexY, RotationY);                                    
+                    vertexZ = Matrix.multiMatrix3D(vertexZ, RotationZ);
+                 
+                    cubo.Vertices[i].X = vertexX.X;
+                    cubo.Vertices[i].Y = vertexY.Y;
+                    cubo.Vertices[i].Z = vertexZ.Z;
                     
                 }
             }
