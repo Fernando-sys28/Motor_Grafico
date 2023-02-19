@@ -12,34 +12,19 @@ namespace Motor_Grafico
 
         public Vertex[] Vertices;
 
-        public Figures() {
+        public Figures(Vertex[] inputVertices) {
 
-            Vertices = new Vertex[8];
+            Vertices = inputVertices;
         }
 
 
-
-        public void AddVertex(double x, double y, double z)
+        public void ImprimirVertices()
         {
-            Vertices = new Vertex[]
+            foreach (Vertex v in Vertices)
             {
-                new Vertex(x, y, z),
-            } ;
-
-            
-        }
-
-        /*public void Rotate(Matrix matrix)
-        {
-            foreach (Vertex vertex in vertices)
-            {
-                double[,] point = new double[,] { { vertex.X }, { vertex.Y }, { vertex.Z } };
-                double[,] result = Matrix.MulMatrix(matrix, new Matrix(point));
-                vertex.X = result[0, 0];
-                vertex.Y = result[1, 0];
-                vertex.Z = result[2, 0];
+                Console.WriteLine("({0}, {1}, {2})", v.X, v.Y, v.Z);
             }
-        }*/
+        }
 
     }
 }

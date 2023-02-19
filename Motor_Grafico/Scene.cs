@@ -11,7 +11,7 @@ namespace Motor_Grafico
     public class Scene
     {
 
-        public List<Figures> Figures;
+        public static List<Figures> Figures;
         public Scene()
         {
             Figures = new List<Figures>();

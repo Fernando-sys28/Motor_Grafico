@@ -5,9 +5,11 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Motor_Grafico
 {
@@ -15,13 +17,11 @@ namespace Motor_Grafico
     {
         Bitmap bmp;
         Graphics g;
-        Figures figure;
+        Figures cubo;
         Scene scena;
-        double angle=45;
-        Matrix rotationMatrix;
-        double[,] matrix;
-        Matrix matrix_XYZ;
-
+        double[] Rotation;
+        Vertex[] vertices = new Vertex[4];
+        double angle1=0, angle2 = 0, angle3 = 0;
         public Form1()
         {
             InitializeComponent();
@@ -29,18 +29,15 @@ namespace Motor_Grafico
             g = Graphics.FromImage(bmp);
             pictureBox1.Image = bmp;
             scena = new Scene();
-            figure = new Figures();
 
-            g.DrawLine(Pens.Gray, 0, pictureBox1.Height / 2, pictureBox1.Width, pictureBox1.Height / 2);
-            g.DrawLine(Pens.Gray, pictureBox1.Width / 2, 0, pictureBox1.Width / 2, pictureBox1.Height);
+            vertices[0] = new Vertex(-50, 50, 0);
+            vertices[1] = new Vertex(50, 50, 0);
+            vertices[2] = new Vertex(50, -50, 0);
+            vertices[3] = new Vertex(-50, -50, 0);
+          
+            cubo = new Figures(vertices);
 
-            figure.AddVertex(-50, 50, 0);
-            figure.AddVertex(50, 50, 0);
-            figure.AddVertex(50, -50, 0);
-            figure.AddVertex(-50, -50, 0);
-
-            //angle = Math.PI / 50;
-
+            cubo.ImprimirVertices();
         }
 
 
@@ -51,27 +48,73 @@ namespace Motor_Grafico
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-           /* //Scene.Figures.Add(figure);
-            Matrix rotationMatrix = Matrix.RotationY(angle);
-            figure.Rotate(rotationMatrix);
-            rotationMatrix = Matrix.RotationX(angle);
-            figure.Rotate(rotationMatrix);
-            rotationMatrix = Matrix.RotationZ(angle);
-            figure.Rotate(rotationMatrix);
 
+            // Actualizar ángulos de rotación
+            angle1 += 0.01f / 57.2958f;
+            angle2 += 0.02f / 57.2958f;
+            angle3 += 0.03f / 57.2958f;
+
+            // Crear matriz de rotación total
+            
+            Rotation = Matrix.multiMatrix(Rotation, Matrix.RotationY(angle2));
+
+            Rotation = Matrix.multiMatrix(Rotation,Matrix.RotationX(angle1));
+            
+            Rotation = Matrix.multiMatrix(Rotation, Matrix.RotationZ(angle3));
+
+            // Aplicar la matriz de transformación a la figura
+            //cubo.Transform(rotation);
+
+            // Redibujar
             Draw();
+            pictureBox1.Invalidate();
+        
 
-            angle += Math.PI / 50;*/
+        /*angle1 += 0.01f;
+        angle2 += 0.02f;
+        angle3 += 0.03f;
 
+
+        RotationY = Matrix.RotationX(angle2);
+        RotationX = Matrix.RotationY(angle1);
+        RotationZ = Matrix.RotationZ(angle3);
+
+        Draw();
+
+        for (int i = 0; i < cubo.Vertices.Length; i++)
+        {
+            Vertex vertexX = cubo.Vertices[i];
+            Vertex vertexY = cubo.Vertices[i];
+            Vertex vertexZ = cubo.Vertices[i];
+
+            //vertexZ = Matrix.multiMatrix(vertexZ, RotationZ);
+            vertexY = Matrix.multiMatrix(vertexY, RotationY);
+            //vertexX = Matrix.multiMatrix(vertexX, RotationX);
+
+
+            //cubo.Vertices[i].Z = vertexZ.Z;
+            cubo.Vertices[i] = vertexY;
+            //cubo.Vertices[i]= vertexX;
 
         }
-       /* public void Draw()
-        {
-            for (int i = 0; i < figure.vertices.Count; i++)
-            {
-                Vertex vertex1 = figure.vertices[i];
-                Vertex vertex2 = i == figure.vertices.Count - 1 ? figure.vertices[0] : figure.vertices[i + 1];
 
+
+
+
+        pictureBox1.Invalidate();*/
+
+    }
+        public void Draw()
+        {
+            g.Clear(Color.Transparent);
+            for (int i = 0; i < cubo.Vertices.Length; i++)
+            {
+                g.DrawLine(Pens.Gray, 0, pictureBox1.Height / 2, pictureBox1.Width, pictureBox1.Height / 2);
+                g.DrawLine(Pens.Gray, pictureBox1.Width / 2, 0, pictureBox1.Width / 2, pictureBox1.Height);
+
+                
+                Vertex vertex1 = cubo.Vertices[i];
+                Vertex vertex2 = i == cubo.Vertices.Length - 1 ? cubo.Vertices[0] : cubo.Vertices[i + 1];
 
                 PointF a = vertex1.ConvertToPointF(vertex1.X, vertex1.Y, vertex1.Z);
                 PointF b = vertex2.ConvertToPointF(vertex2.X, vertex2.Y, vertex2.Z);
@@ -83,10 +126,9 @@ namespace Motor_Grafico
                 b2 = new PointF(Sx + b.X, Sy - b.Y);
 
                 g.DrawLine(Pens.White, a2, b2);
+
             }
-        }*/
-
-
+        }
 
     }
 }
