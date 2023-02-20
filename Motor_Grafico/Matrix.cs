@@ -17,24 +17,17 @@ namespace Motor_Grafico
         }
         public static Vertex multiMatrix(Vertex vertice, double[,] M)
         {
-            double x= (M[0, 0] * vertice.X) + (M[1, 0] * vertice.Y)  + (M[2, 0] * vertice.Z);
-            double y = (M[0, 1] * vertice.X) + (M[1, 1] * vertice.Y) + (M[2, 1] * vertice.Z);
-            double z = (M[0, 2] * vertice.X) + (M[1, 2] * vertice.Y) + (M[2, 2] * vertice.Z);
+            double x = (M[0, 0] * vertice.X) + (M[0, 1] * vertice.Y)  + (M[0, 2] * vertice.Z);
+            double y = (M[1, 0] * vertice.X) + (M[1, 1] * vertice.Y)  + (M[1, 2] * vertice.Z);
+            double z = (M[2, 0] * vertice.X) + (M[2, 1] * vertice.Y)  + (M[2, 2] * vertice.Z);
 
             return new Vertex(x,y,z);
         }
 
-        public static Vertex multiMatrix3D(Vertex vertice, double[,] M)
-        {
-            vertice.X = (M[0, 0] * vertice.X) + (M[1, 0] * vertice.Y) + (M[2, 0] * vertice.Z);
-            vertice.Y = (M[0, 1] * vertice.X) + (M[1, 1] * vertice.Y) + (M[2, 1] * vertice.Z);
-            vertice.Z = (M[0, 2] * vertice.X) + (M[1, 2] * vertice.Y) + (M[2, 2] * vertice.Z);
-
-            return vertice;
-        }
-
+        
         public static double[,] RotationX(double angle)
         {
+            Console.WriteLine(angle);
             double sin = Math.Sin(angle);
             double cos = Math.Cos(angle);
 
@@ -42,12 +35,13 @@ namespace Motor_Grafico
                 {1, 0, 0},
                 {0, cos, -sin},
                 {0, sin, cos}
-            };
+            };      
             return rotationX;
         }
 
         public static double[,] RotationY(double angle)
         {
+            Console.WriteLine(angle);
             double sin = Math.Sin(angle);
             double cos = Math.Cos(angle);
 
@@ -61,6 +55,7 @@ namespace Motor_Grafico
 
         public static double[,] RotationZ(double angle)
         {
+            Console.WriteLine(angle);
             double sin = Math.Sin(angle);
             double cos = Math.Cos(angle);
 

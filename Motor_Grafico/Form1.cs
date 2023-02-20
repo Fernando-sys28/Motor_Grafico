@@ -21,12 +21,11 @@ namespace Motor_Grafico
         Scene scena;
         double[,] RotationX,RotationY,RotationZ;
         Vertex[] vertices = new Vertex[8];
-        double angle1=0, angle2 = 0, angle3 = 0;
+        double angle = 0;
+        double radianes;
         bool RX=false;
         bool RY=false;
         bool RZ=false;
-        bool RXYZ=false;
-
         
         public Form1()
         {
@@ -47,41 +46,33 @@ namespace Motor_Grafico
 
             cubo = new Figures(vertices);
 
+            graphic.Clear(Color.Transparent);
         }
 
         private void timer1_Tick(object sender, EventArgs j)
         {
-            if (angle1 == 0 & angle2 == 0 & angle3 == 0)
-            {
-                angle1 += 1f / 57.2958f;
-                angle2 += 1f / 57.2958f;
-                angle3 += 1f / 57.2958f;
-            }
-            
 
+            radianes = convertirRadiantes(angle);
 
             if (RX== true)
             {
-
-                RotationX = Matrix.RotationX(angle1);
-
+              
+                RotationX = Matrix.RotationX(radianes);
 
                 for (int i = 0; i < cubo.Vertices.Length; i++)
                 {
                     Vertex vertexX = cubo.Vertices[i];
 
                     vertexX = Matrix.multiMatrix(vertexX, RotationX);
-                    cubo.Vertices[i] = vertexX;
-
+                    cubo.Vertices[i] = vertexX;                 
                 }
-                graphic.Clear(Color.Transparent);
+              
             }
-
-
+            
             if (RY == true)
             {
-
-                RotationY = Matrix.RotationY(angle1);
+                
+                RotationY = Matrix.RotationY(radianes);
 
                 for (int i = 0; i < cubo.Vertices.Length; i++)
                 {
@@ -90,51 +81,22 @@ namespace Motor_Grafico
                     vertexY = Matrix.multiMatrix(vertexY, RotationY);
                     cubo.Vertices[i] = vertexY;
 
-                }
-                graphic.Clear(Color.Transparent);
+                }             
             }
 
             if (RZ == true)
-            {
+            {             
+                RotationZ = Matrix.RotationZ(radianes);
 
-                RotationZ = Matrix.RotationZ(angle1);
-
-                for (int i = 0; i < cubo.Vertices.Length; i++)
+                for (int h = 0; h < cubo.Vertices.Length; h++)
                 {
-                    Vertex vertexZ = cubo.Vertices[i];
+                    Vertex vertexZ = cubo.Vertices[h];
 
                     vertexZ = Matrix.multiMatrix(vertexZ, RotationZ);
-                    cubo.Vertices[i] = vertexZ;
-                }
-                graphic.Clear(Color.Transparent);
-
-            }
-
-            if (RXYZ == true)
-            {
-               
-                 RotationX = Matrix.RotationX(angle1);
-                 RotationY = Matrix.RotationY(angle2);
-                 RotationZ = Matrix.RotationZ(angle3);
-
-                for (int i = 0; i < cubo.Vertices.Length; i++)
-
-                 {
-                    Vertex vertexY = cubo.Vertices[i];
-                    Vertex vertexX = cubo.Vertices[i];                    
-                    Vertex vertexZ = cubo.Vertices[i];
-
-                    vertexX = Matrix.multiMatrix3D(vertexX, RotationX);
-                    vertexY = Matrix.multiMatrix3D(vertexY, RotationY);                                    
-                    vertexZ = Matrix.multiMatrix3D(vertexZ, RotationZ);
-                 
-                    cubo.Vertices[i].X = vertexX.X;
-                    cubo.Vertices[i].Y = vertexY.Y;
-                    cubo.Vertices[i].Z = vertexZ.Z;
-                    
+                    cubo.Vertices[h] = vertexZ;
                 }
             }
-
+            
             graphic.Clear(Color.Transparent);
             Draw(cubo.Vertices[0], cubo.Vertices[1]);
             Draw(cubo.Vertices[1], cubo.Vertices[2]);
@@ -148,6 +110,7 @@ namespace Motor_Grafico
             Draw(cubo.Vertices[6], cubo.Vertices[1]);
             Draw(cubo.Vertices[5], cubo.Vertices[2]);
             Draw(cubo.Vertices[4], cubo.Vertices[3]);
+
 
             pictureBox1.Invalidate();   
         }
@@ -174,7 +137,7 @@ namespace Motor_Grafico
             RX = true;
             RY = false;
             RZ = false;
-            RXYZ = false;
+
             vertices[0] = new Vertex(-50, 50, -50);
             vertices[1] = new Vertex(50, 50, -50);
             vertices[2] = new Vertex(50, -50, -50);
@@ -189,8 +152,7 @@ namespace Motor_Grafico
             RX = false;
             RY = true;
             RZ = false;
-            RXYZ = false;
-
+            
             vertices[0] = new Vertex(-50, 50, -50);
             vertices[1] = new Vertex(50, 50, -50);
             vertices[2] = new Vertex(50, -50, -50);
@@ -205,8 +167,7 @@ namespace Motor_Grafico
             RX = false;
             RY = false;
             RZ = true;
-            RXYZ = false;
-
+            
             vertices[0] = new Vertex(-50, 50, -50);
             vertices[1] = new Vertex(50, 50, -50);
             vertices[2] = new Vertex(50, -50, -50);
@@ -219,11 +180,10 @@ namespace Motor_Grafico
 
         private void button4_Click(object sender, EventArgs e)
         {
-            RX = false;
-            RY = false;
-            RZ = false;
-            RXYZ = true;
-
+            RX = true;
+            RY = true;
+            RZ = true;
+           
             vertices[0] = new Vertex(-50, 50, -50);
             vertices[1] = new Vertex(50, 50, -50);
             vertices[2] = new Vertex(50, -50, -50);
@@ -233,5 +193,14 @@ namespace Motor_Grafico
             vertices[6] = new Vertex(50, 50, 50);
             vertices[7] = new Vertex(-50, 50, 50);
         }
+        private double convertirRadiantes(double angulo)
+        {
+            if (angulo == 0)
+            {
+                angulo += 1f / 57.2958f;
+            }
+            return angulo;
+        }
+
     }
 }
