@@ -27,7 +27,7 @@ namespace Motor_Grafico
         
         public static double[,] RotationX(double angle)
         {
-            Console.WriteLine(angle);
+          
             double sin = Math.Sin(angle);
             double cos = Math.Cos(angle);
 
@@ -41,7 +41,7 @@ namespace Motor_Grafico
 
         public static double[,] RotationY(double angle)
         {
-            Console.WriteLine(angle);
+            
             double sin = Math.Sin(angle);
             double cos = Math.Cos(angle);
 
@@ -55,7 +55,7 @@ namespace Motor_Grafico
 
         public static double[,] RotationZ(double angle)
         {
-            Console.WriteLine(angle);
+            
             double sin = Math.Sin(angle);
             double cos = Math.Cos(angle);
 
