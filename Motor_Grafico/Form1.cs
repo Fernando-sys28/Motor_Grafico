@@ -34,7 +34,7 @@ namespace Motor_Grafico
             scena = new Scene();
             
             graphic.Clear(Color.Transparent);
-            timer1.Start();
+            
         }
 
         private void timer1_Tick(object sender, EventArgs j)
@@ -49,8 +49,10 @@ namespace Motor_Grafico
                 Draw(triangle.a, triangle.b);
                 Draw(triangle.b, triangle.c);
                 Draw(triangle.c, triangle.a);
+
             }
 
+            
             pictureBox1.Invalidate();   
         }
         public void Draw(Vertex uno, Vertex dos)
@@ -63,18 +65,25 @@ namespace Motor_Grafico
             {
                 Vertex normal = CalculateNormal(triangle.a, triangle.b, triangle.c);
 
-                // Check if triangle is facing towards camera
-                // Convert vertex positions to 2D screen coordinates
-                var a = triangle.a.ConvertToPointF(triangle.a.X * 500 / (500 - triangle.a.Z), triangle.a.Y * 500 / (500 - triangle.a.Z));
-                var b = triangle.b.ConvertToPointF(triangle.b.X * 500 / (500 - triangle.b.Z), triangle.b.Y * 500 / (500 - triangle.b.Z));
-                var c = triangle.c.ConvertToPointF(triangle.c.X * 500 / (500 - triangle.c.Z), triangle.c.Y * 500 / (500 - triangle.c.Z));
+                Vertex cameraVector = new Vertex(0, 0, -1);
+                float normalize = (float)Math.Sqrt(DotProduct(normal,cameraVector));
 
-                // Move to screen center and draw
-                var center = new PointF(pictureBox1.Width / 2, pictureBox1.Height / 2);
-                graphic.DrawLine(Pens.White, new PointF(a.X + center.X, -a.Y + center.Y), new PointF(b.X + center.X, -b.Y + center.Y));
-                graphic.DrawLine(Pens.White, new PointF(b.X + center.X, -b.Y + center.Y), new PointF(c.X + center.X, -c.Y + center.Y));
-                graphic.DrawLine(Pens.White, new PointF(c.X + center.X, -c.Y + center.Y), new PointF(a.X + center.X, -a.Y + center.Y));
+                Console.WriteLine(normalize);
 
+                if (normalize < 3)
+                {
+                    // Convert vertex positions to 2D screen coordinates
+                    var a = triangle.a.ConvertToPointF(triangle.a.X * 5 / (5- triangle.a.Z), triangle.a.Y * 5 / (5 - triangle.a.Z));
+                    var b = triangle.b.ConvertToPointF(triangle.b.X * 5 / (5 - triangle.b.Z), triangle.b.Y * 5 / (5 - triangle.b.Z));
+                    var c = triangle.c.ConvertToPointF(triangle.c.X * 5 / (5 - triangle.c.Z), triangle.c.Y * 5 / (5 - triangle.c.Z));
+
+                    // Move to screen center and draw
+                    var center = new PointF(pictureBox1.Width / 2, pictureBox1.Height / 2);
+                    graphic.DrawLine(Pens.White, new PointF(a.X + center.X, -a.Y + center.Y), new PointF(b.X + center.X, -b.Y + center.Y));
+                    graphic.DrawLine(Pens.White, new PointF(b.X + center.X, -b.Y + center.Y), new PointF(c.X + center.X, -c.Y + center.Y));
+                    graphic.DrawLine(Pens.White, new PointF(c.X + center.X, -c.Y + center.Y), new PointF(a.X + center.X, -a.Y + center.Y));
+                }
+            
             }
 
             /*PointF a = uno.ConvertToPointF(uno.X * 500 / (500 - uno.Z), uno.Y * 500 / (500 - uno.Z));
@@ -91,13 +100,14 @@ namespace Motor_Grafico
 
         private Vertex CalculateNormal(Vertex a, Vertex b, Vertex c)
         {
-            Vertex edge1 = new Vertex(b.X - a.X, b.Y - a.Y, b.Z - a.Z);
+            Vertex edge1 = new Vertex(b.X - a.X, b.Y - a.Y, b.Z - a.Z);         
             Vertex edge2 = new Vertex(c.X - a.X, c.Y - a.Y, c.Z - a.Z);
 
             float CrossX = edge1.Y * edge2.Z - edge1.Z * edge2.Y;
             float CrossY = edge1.Z * edge2.X - edge1.X * edge2.Z;
             float CrossZ = edge1.X * edge2.Y - edge1.Y * edge2.X;
-            Vertex normal= new Vertex(CrossX, CrossY , CrossZ );
+
+            Vertex normal= new Vertex(CrossX, CrossY, CrossZ);
 
             return normal;
         }
@@ -105,6 +115,7 @@ namespace Motor_Grafico
         // Calculates the dot product of two vectors
         private float DotProduct(Vertex a, Vertex b)
         {
+
             return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
         }
 

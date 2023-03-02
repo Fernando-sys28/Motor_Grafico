@@ -34,19 +34,21 @@ namespace Motor_Grafico
             Console.WriteLine(a.Y);
             Console.WriteLine(a.Z);
 
-            triangulo[] triangulos = new triangulo[12];
-            triangulos[0]= new triangulo(a, b, c);
-            triangulos[1] = new triangulo(a, c, d);
-            triangulos[2] = new triangulo(e, a, d);
-            triangulos[3] = new triangulo(e, d, h);
-            triangulos[4] = new triangulo(f, e, h);
-            triangulos[5] = new triangulo(f, h, g);
-            triangulos[6] = new triangulo(b, f, g);
-            triangulos[7] = new triangulo(b, g, c);
-            triangulos[8] = new triangulo(e, f, b);
-            triangulos[9] = new triangulo(e, b, a);
-            triangulos[10] = new triangulo(c, g, h);
-            triangulos[11] = new triangulo(c, h, d);
+            triangulo[] triangles = new triangulo[12];
+            triangles[0]= new triangulo(a, b, c);
+            triangles[1] = new triangulo(a, c, d);
+            triangles[2] = new triangulo(e, a, d);
+            triangles[3] = new triangulo(e, d, h);
+            triangles[4] = new triangulo(f, e, h);
+            triangles[5] = new triangulo(f, h, g);
+            triangles[6] = new triangulo(b, f, g);
+            triangles[7] = new triangulo(b, g, c);
+            triangles[8] = new triangulo(e, f, b);
+            triangles[9] = new triangulo(e, b, a);
+            triangles[10] = new triangulo(c, g, h);
+            triangles[11] = new triangulo(c, h, d);
+
+            mesh.triangulos.AddRange(triangles);
             
         }
 
