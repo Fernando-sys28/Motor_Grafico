@@ -17,12 +17,10 @@ namespace Motor_Grafico
     {
         Bitmap bmp;
         Graphics graphic;
-        Figures cubo;
         Scene scena;
-        double[,] RotationX,RotationY,RotationZ;
-        Vertex[] vertices = new Vertex[8];
-        double angle = 0;
-        double radianes;
+        float[,] RotationX,RotationY,RotationZ;
+        float angle = 0;
+        float radianes;
         bool RX=false;
         bool RY=false;
         bool RZ=false;
@@ -33,84 +31,25 @@ namespace Motor_Grafico
             bmp = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             graphic = Graphics.FromImage(bmp);
             pictureBox1.Image = bmp;
-            scena = new Scene(cubo);
-
-            vertices[0] = new Vertex(-50, 50, -50);
-            vertices[1] = new Vertex(50, 50, -50);
-            vertices[2] = new Vertex(50, -50, -50);
-            vertices[3] = new Vertex(-50, -50, -50);
-            vertices[4] = new Vertex(-50, -50, 50);
-            vertices[5] = new Vertex(50, -50, 50);
-            vertices[6] = new Vertex(50, 50, 50);
-            vertices[7] = new Vertex(-50, 50, 50);
-
-            cubo = new Figures(vertices);
-
+            scena = new Scene();
+            
             graphic.Clear(Color.Transparent);
+            timer1.Start();
         }
 
         private void timer1_Tick(object sender, EventArgs j)
         {
 
             radianes = convertirRadiantes(angle);
-
-            if (RX== true)
-            {
-              
-                RotationX = Matrix.RotationX(radianes);
-
-                for (int i = 0; i < cubo.Vertices.Length; i++)
-                {
-                    Vertex vertexX = cubo.Vertices[i];
-
-                    vertexX = Matrix.multiMatrix(vertexX, RotationX);
-                    cubo.Vertices[i] = vertexX;                 
-                }
-              
-            }
-            
-            if (RY == true)
-            {
-                
-                RotationY = Matrix.RotationY(radianes);
-
-                for (int i = 0; i < cubo.Vertices.Length; i++)
-                {
-                    Vertex vertexY = cubo.Vertices[i];
-
-                    vertexY = Matrix.multiMatrix(vertexY, RotationY);
-                    cubo.Vertices[i] = vertexY;
-
-                }             
-            }
-
-            if (RZ == true)
-            {             
-                RotationZ = Matrix.RotationZ(radianes);
-
-                for (int h = 0; h < cubo.Vertices.Length; h++)
-                {
-                    Vertex vertexZ = cubo.Vertices[h];
-
-                    vertexZ = Matrix.multiMatrix(vertexZ, RotationZ);
-                    cubo.Vertices[h] = vertexZ;
-                }
-            }
             
             graphic.Clear(Color.Transparent);
-            Draw(cubo.Vertices[0], cubo.Vertices[1]);
-            Draw(cubo.Vertices[1], cubo.Vertices[2]);
-            Draw(cubo.Vertices[2], cubo.Vertices[3]);
-            Draw(cubo.Vertices[3], cubo.Vertices[0]);
-            Draw(cubo.Vertices[4], cubo.Vertices[5]);
-            Draw(cubo.Vertices[5], cubo.Vertices[6]);
-            Draw(cubo.Vertices[6], cubo.Vertices[7]);
-            Draw(cubo.Vertices[7], cubo.Vertices[4]);
-            Draw(cubo.Vertices[7], cubo.Vertices[0]);
-            Draw(cubo.Vertices[6], cubo.Vertices[1]);
-            Draw(cubo.Vertices[5], cubo.Vertices[2]);
-            Draw(cubo.Vertices[4], cubo.Vertices[3]);
 
+            foreach (triangulo triangle in scena.mesh.triangulos)
+            {
+                Draw(triangle.a, triangle.b);
+                Draw(triangle.b, triangle.c);
+                Draw(triangle.c, triangle.a);
+            }
 
             pictureBox1.Invalidate();   
         }
@@ -120,7 +59,25 @@ namespace Motor_Grafico
             graphic.DrawLine(Pens.Gray, 0, pictureBox1.Height / 2, pictureBox1.Width, pictureBox1.Height / 2);
             graphic.DrawLine(Pens.Gray, pictureBox1.Width / 2, 0, pictureBox1.Width / 2, pictureBox1.Height);
 
-            PointF a = uno.ConvertToPointF(uno.X * 500 / (500 - uno.Z), uno.Y * 500 / (500 - uno.Z));
+            foreach (var triangle in scena.mesh.triangulos)
+            {
+                Vertex normal = CalculateNormal(triangle.a, triangle.b, triangle.c);
+
+                // Check if triangle is facing towards camera
+                // Convert vertex positions to 2D screen coordinates
+                var a = triangle.a.ConvertToPointF(triangle.a.X * 500 / (500 - triangle.a.Z), triangle.a.Y * 500 / (500 - triangle.a.Z));
+                var b = triangle.b.ConvertToPointF(triangle.b.X * 500 / (500 - triangle.b.Z), triangle.b.Y * 500 / (500 - triangle.b.Z));
+                var c = triangle.c.ConvertToPointF(triangle.c.X * 500 / (500 - triangle.c.Z), triangle.c.Y * 500 / (500 - triangle.c.Z));
+
+                // Move to screen center and draw
+                var center = new PointF(pictureBox1.Width / 2, pictureBox1.Height / 2);
+                graphic.DrawLine(Pens.White, new PointF(a.X + center.X, -a.Y + center.Y), new PointF(b.X + center.X, -b.Y + center.Y));
+                graphic.DrawLine(Pens.White, new PointF(b.X + center.X, -b.Y + center.Y), new PointF(c.X + center.X, -c.Y + center.Y));
+                graphic.DrawLine(Pens.White, new PointF(c.X + center.X, -c.Y + center.Y), new PointF(a.X + center.X, -a.Y + center.Y));
+
+            }
+
+            /*PointF a = uno.ConvertToPointF(uno.X * 500 / (500 - uno.Z), uno.Y * 500 / (500 - uno.Z));
             PointF b = dos.ConvertToPointF(dos.X * 500 / (500 - dos.Z ), dos.Y * 500 / (500- dos.Z));
 
              PointF a2, b2;
@@ -129,23 +86,34 @@ namespace Motor_Grafico
              int Sy = (pictureBox1.Height / 2);
              a2 = new PointF(Sx + a.X, Sy - a.Y);
              b2 = new PointF(Sx + b.X, Sy - b.Y);
-             graphic.DrawLine(Pens.White, a2, b2);        
+             graphic.DrawLine(Pens.White, a2, b2);*/
         }
+
+        private Vertex CalculateNormal(Vertex a, Vertex b, Vertex c)
+        {
+            Vertex edge1 = new Vertex(b.X - a.X, b.Y - a.Y, b.Z - a.Z);
+            Vertex edge2 = new Vertex(c.X - a.X, c.Y - a.Y, c.Z - a.Z);
+
+            float CrossX = edge1.Y * edge2.Z - edge1.Z * edge2.Y;
+            float CrossY = edge1.Z * edge2.X - edge1.X * edge2.Z;
+            float CrossZ = edge1.X * edge2.Y - edge1.Y * edge2.X;
+            Vertex normal= new Vertex(CrossX, CrossY , CrossZ );
+
+            return normal;
+        }
+
+        // Calculates the dot product of two vectors
+        private float DotProduct(Vertex a, Vertex b)
+        {
+            return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
+        }
+
 
         private void button1_Click(object sender, EventArgs e)
         {
             RX = true;
             RY = false;
             RZ = false;
-
-            vertices[0] = new Vertex(-50, 50, -50);
-            vertices[1] = new Vertex(50, 50, -50);
-            vertices[2] = new Vertex(50, -50, -50);
-            vertices[3] = new Vertex(-50, -50, -50);
-            vertices[4] = new Vertex(-50, -50, 50);
-            vertices[5] = new Vertex(50, -50, 50);
-            vertices[6] = new Vertex(50, 50, 50);
-            vertices[7] = new Vertex(-50, 50, 50);
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -153,29 +121,12 @@ namespace Motor_Grafico
             RY = true;
             RZ = false;
             
-            vertices[0] = new Vertex(-50, 50, -50);
-            vertices[1] = new Vertex(50, 50, -50);
-            vertices[2] = new Vertex(50, -50, -50);
-            vertices[3] = new Vertex(-50, -50, -50);
-            vertices[4] = new Vertex(-50, -50, 50);
-            vertices[5] = new Vertex(50, -50, 50);
-            vertices[6] = new Vertex(50, 50, 50);
-            vertices[7] = new Vertex(-50, 50, 50);
         }
         private void button3_Click(object sender, EventArgs e)
         {
             RX = false;
             RY = false;
             RZ = true;
-            
-            vertices[0] = new Vertex(-50, 50, -50);
-            vertices[1] = new Vertex(50, 50, -50);
-            vertices[2] = new Vertex(50, -50, -50);
-            vertices[3] = new Vertex(-50, -50, -50);
-            vertices[4] = new Vertex(-50, -50, 50);
-            vertices[5] = new Vertex(50, -50, 50);
-            vertices[6] = new Vertex(50, 50, 50);
-            vertices[7] = new Vertex(-50, 50, 50);
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -184,23 +135,18 @@ namespace Motor_Grafico
             RY = true;
             RZ = true;
            
-            vertices[0] = new Vertex(-50, 50, -50);
-            vertices[1] = new Vertex(50, 50, -50);
-            vertices[2] = new Vertex(50, -50, -50);
-            vertices[3] = new Vertex(-50, -50, -50);
-            vertices[4] = new Vertex(-50, -50, 50);
-            vertices[5] = new Vertex(50, -50, 50);
-            vertices[6] = new Vertex(50, 50, 50);
-            vertices[7] = new Vertex(-50, 50, 50);
         }
-        private double convertirRadiantes(double angulo)
+        private float convertirRadiantes(float angulo)
         {
             if (angulo == 0)
             {
                 angulo += 1f / 57.2958f;
             }
+            
             return angulo;
         }
+
+
 
     }
 }
