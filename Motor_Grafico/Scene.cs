@@ -10,18 +10,10 @@ namespace Motor_Grafico
     
     public class Scene
     {
-
         public Mesh mesh;
-        
-
         public Scene()
         {
             mesh = new Mesh();
-            //createCube(mesh);
-            //createCone(center, radius, height, numSegments, mesh);
-            //createPentagono(center, radius, height, 5, mesh);
-            //createCylinder(center, radius, height, numSegments, mesh);
-            //createSphere(radiusC, numSegmentsC, mesh);
         }
 
         public void createCube(Mesh mesh)
@@ -122,11 +114,11 @@ namespace Motor_Grafico
                 mesh.triangulos.Add(new triangulo(v5, v3, v6));
             }
         }
-        public void createSphere(float radius, int numSegments, Mesh mesh)
+        public Mesh createSphere(float radius, int numSegments)
         {
+            Mesh mesh = new Mesh();
             for (int i = 0; i < numSegments + 1; i++)
             {
-
                 float latitud0 = (float)Math.PI * (-0.5f + (float)(i - 1) / numSegments);
                 float z = (float)Math.Sin(latitud0) * radius;
                 float xz0 = (float)Math.Cos(latitud0) * radius;
@@ -155,15 +147,19 @@ namespace Motor_Grafico
                     Vertex v1 = new Vertex(x1, y1, z);
                     Vertex v2 = new Vertex(x2, y2, z1);
                     Vertex v3 = new Vertex(x3, y3, z1);
+
                     if (i == 0) { }
                     else if (i == 1)
+                    {
                         mesh.triangulos.Add(new triangulo(v3, v2, v1));
-
+                    }
                     else
+                    {
                         mesh.triangulos.Add(new triangulo(v0, v1, v2));
-
+                    }
                 }
             }
+            return mesh;
         }
     }
 }

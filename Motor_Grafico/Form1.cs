@@ -24,13 +24,14 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
         bool RX = false;
         bool RY = false;
         bool RZ = false;
+        bool SphereB= false;
 
         Vertex center = new Vertex(0, 0, 0);
         float radius = 1f;
         float height = 2.5f;
-        int numSegments = 15;
-        float radiusC = 1.5f;
-        int numSegmentsC = 12;
+        int numSegments = 13;
+        float radiusC = 1.8f;
+        int numSegmentsC = 10;
 
         public Form1()
         {
@@ -215,21 +216,23 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
         private void button6_Click(object sender, EventArgs e)
         {
+            SphereB = true;
             Mesh newMesh = new Mesh();
             scena.mesh = newMesh;
-
             scena.createCylinder(center, radius, height, numSegments, scena.mesh);
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
+            SphereB = true;
             Mesh newMesh = new Mesh();
             scena.mesh = newMesh;
-            scena.createSphere(radiusC, numSegmentsC, scena.mesh);
+            scena.mesh = scena.createSphere(radiusC, numSegmentsC);
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
+            SphereB = false;
             Mesh newMesh = new Mesh();
             scena.mesh = newMesh;
             scena.createCone(center, radius, height, numSegments, scena.mesh);
@@ -237,6 +240,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
         private void button8_Click(object sender, EventArgs e)
         {
+            SphereB = false;
             Mesh newMesh = new Mesh();
             scena.mesh = newMesh;
             scena.createPentagono(center, radius, height, 5, scena.mesh);
@@ -244,6 +248,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
         private void button5_Click(object sender, EventArgs e)
         {
+            SphereB = false;
             Mesh newMesh = new Mesh();
             scena.mesh = newMesh;
             scena.createCube(scena.mesh);
@@ -252,7 +257,11 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
         private float convertirRadiantes(float angulo)
         {
-            if (angulo == 0 )
+            if(SphereB == true && angulo == 0)
+            {
+                angulo += 9f / 100f;
+            }
+            else if (angulo == 0 )
             {
                 angulo += 1.5f / 57.2958f;
             }         
