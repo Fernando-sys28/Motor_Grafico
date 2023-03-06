@@ -13,22 +13,22 @@ namespace Motor_Grafico
 
         public Mesh mesh;
         Vertex center = new Vertex(0, 0, 0);
-        float radius = 1F;
+        float radius = 1.5f;
         float height = 2.5f;
         int numSegments = 12;
         int numLongitudes = 9;
         int numLatitudes = 9;
-
+        private List<triangulo> triangles;
         public Scene()
         {
             mesh = new Mesh();
             //createCube(mesh);
             //createCone(center, radius, height, numSegments, mesh);
             //createPentagono(center, radius, height, 5, mesh);
-            createCylinder(center, radius, height, numSegments, mesh);
+            //createCylinder(center, radius, height, numSegments, mesh);
             //CreateSphere(radius, numLongitudes, numLatitudes, mesh);
-            //CreateSphereParallel(radius, numLongitudes, numLatitudes, mesh);
-            //createIcosahedron(center, radius, mesh);
+            CreateSphere2(radius, numLongitudes, numLatitudes, mesh);
+            //Sphere(radius, numSegments, mesh);
         }
 
         public void createCube(Mesh mesh)
@@ -143,9 +143,9 @@ namespace Motor_Grafico
             // pre-calculate sine and cosine values for latitude angles
             float[] cosLatitudes = new float[numLatitudes + 2];
             float[] sinLatitudes = new float[numLatitudes + 2];
-            for (int i = 0; i < numLatitudes + 2; i++)
+            for (int i = 0; i < numLatitudes + 1; i++)
             {
-                float latitudeAngle = i * latitudeAngleStep;
+                float latitudeAngle = (i) * latitudeAngleStep;
                 cosLatitudes[i] = (float)Math.Cos(latitudeAngle);
                 sinLatitudes[i] = (float)Math.Sin(latitudeAngle);
             }
@@ -155,7 +155,7 @@ namespace Motor_Grafico
             float[] sinLongitudes = new float[numLongitudes];
             for (int j = 0; j < numLongitudes; j++)
             {
-                float longitudeAngle = j * longitudeAngleStep;
+                float longitudeAngle = (j+1) * longitudeAngleStep;
                 cosLongitudes[j] = (float)Math.Cos(longitudeAngle);
                 sinLongitudes[j] = (float)Math.Sin(longitudeAngle);
             }
@@ -163,8 +163,8 @@ namespace Motor_Grafico
             // create vertices and triangles
             Parallel.For(0, numLatitudes, i =>
             {
-                int i1 = i + 1;
-                int i2 = i + 2;
+                int i1 = i ;
+                int i2 = i + 1;
                 float sinLat1 = sinLatitudes[i1];
                 float cosLat1 = cosLatitudes[i1];
                 float sinLat2 = sinLatitudes[i2];
@@ -181,110 +181,11 @@ namespace Motor_Grafico
 
                     Vertex v1 = new Vertex(radius * sinLat1 * cosLon1, radius * sinLat1 * sinLon1, radius * cosLat1);
                     Vertex v2 = new Vertex(radius * sinLat1 * cosLon2, radius * sinLat1 * sinLon2, radius * cosLat1);
-                    Vertex v3 = new Vertex(radius * sinLat2 * cosLon2, radius * sinLat2 * sinLon2, radius * cosLat2);
-                    Vertex v4 = new Vertex(radius * sinLat2 * cosLon1, radius * sinLat2 * sinLon1, radius * cosLat2);
+                    Vertex v3 = new Vertex(radius * sinLat2 * cosLon1, radius * sinLat2 * sinLon1, radius * cosLat2);
+                    Vertex v4 = new Vertex(radius * sinLat2 * cosLon2, radius * sinLat2 * sinLon2, radius * cosLat2);
 
-                    mesh.triangulos.Add(new triangulo(v1, v3, v2));
-                    mesh.triangulos.Add(new triangulo(v1, v4, v3));
-                }
-            });
-        }
-
-
-
-        public void createIcosahedron(Vertex center, float radius, Mesh mesh)
-        {
-            float phi = (1 + (float)Math.Sqrt(5)) / 2;
-            float a = radius / (float)Math.Sqrt(phi * phi + 1);
-            float b = a * phi;
-
-            Vertex[] vertices = new Vertex[12];
-            vertices[0] = new Vertex(-a, 0, b);
-            vertices[1] = new Vertex(a, 0, b);
-            vertices[2] = new Vertex(-a, 0, -b);
-            vertices[3] = new Vertex(a, 0, -b);
-            vertices[4] = new Vertex(0, b, a);
-            vertices[5] = new Vertex(0, b, -a);
-            vertices[6] = new Vertex(0, -b, a);
-            vertices[7] = new Vertex(0, -b, -a);
-            vertices[8] = new Vertex(b, a, 0);
-            vertices[9] = new Vertex(-b, a, 0);
-            vertices[10] = new Vertex(b, -a, 0);
-            vertices[11] = new Vertex(-b, -a, 0);
-
-            int[][] faces = new int[20][];
-            faces[0] = new int[] { 0, 4, 1 };
-            faces[1] = new int[] { 0, 9, 4 };
-            faces[2] = new int[] { 9, 5, 4 };
-            faces[3] = new int[] { 4, 5, 8 };
-            faces[4] = new int[] { 4, 8, 1 };
-            faces[5] = new int[] { 8, 10, 1 };
-            faces[6] = new int[] { 8, 3, 10 };
-            faces[7] = new int[] { 5, 3, 8 };
-            faces[8] = new int[] { 5, 2, 3 };
-            faces[9] = new int[] { 2, 7, 3 };
-            faces[10] = new int[] { 7, 10, 3 };
-            faces[11] = new int[] { 7, 6, 10 };
-            faces[12] = new int[] { 7, 11, 6 };
-            faces[13] = new int[] { 11, 0, 6 };
-            faces[14] = new int[] { 0, 1, 6 };
-            faces[15] = new int[] { 6, 1, 10 };
-            faces[16] = new int[] { 9, 0, 11 };
-            faces[17] = new int[] { 9, 11, 2 };
-            faces[18] = new int[] { 9, 2, 5 };
-            faces[19] = new int[] { 7, 2, 11 };
-
-            for (int i = 0; i < faces.Length; i++)
-            {
-                int[] face = faces[i];
-                Vertex v1 = vertices[face[0]];
-                Vertex v2 = vertices[face[1]];
-                Vertex v3 = vertices[face[2]];
-                mesh.triangulos.Add(new triangulo(v3, v1, v2));
-            }
-        }
-
-        public void CreateSphereParallel(float radius, int numLongitudes, int numLatitudes, Mesh mesh)
-        {
-            float longitudeStep = 2 * (float)Math.PI / numLongitudes;
-            float latitudeStep = (float)Math.PI / numLatitudes;
-
-            // Define the vertices
-            List<Vertex> vertices = new List<Vertex>();
-            Parallel.For(0, numLatitudes + 1, i =>
-            {
-                float latitude = (float)Math.PI / 2 - i * latitudeStep;
-                float y = radius * (float)Math.Sin(latitude);
-                float xz = radius * (float)Math.Cos(latitude);
-
-                for (int j = 0; j <= numLongitudes; j++)
-                {
-                    float longitude = j * longitudeStep;
-                    float x = xz * (float)Math.Cos(longitude);
-                    float z = xz * (float)Math.Sin(longitude);
-
-                    lock (vertices)
-                    {
-                        vertices.Add(new Vertex(z, y, x));
-                    }
-                }
-            });
-
-            // Define the triangles
-            Parallel.For(0, numLatitudes, i =>
-            {
-                for (int j = 0; j < numLongitudes; j++)
-                {
-                    int first = i * (numLongitudes + 1) + j;
-                    int second = first + 1;
-                    int third = first + numLongitudes + 1;
-                    int fourth = third + 1;
-
-                    lock (mesh.triangulos)
-                    {
-                        mesh.triangulos.Add(new triangulo(vertices[first], vertices[third], vertices[second]));
-                        mesh.triangulos.Add(new triangulo(vertices[third], vertices[fourth], vertices[first]));
-                    }
+                    mesh.triangulos.Add(new triangulo(v1, v2, v3));
+                    mesh.triangulos.Add(new triangulo(v4, v3, v2));
                 }
             });
         }
@@ -297,38 +198,80 @@ namespace Motor_Grafico
             // Define the vertices
             List<Vertex> vertices = new List<Vertex>();
 
-            // Parallelize the creation of vertices
             Parallel.For(0, numLatitudes + 1, i => {
-                float latitude = (float)Math.PI / 2 - i * latitudeStep;
-                float y = radius * (float)Math.Sin(latitude);
+                float latitude = (float)Math.PI / 2 - ((i - 1) * latitudeStep);
+                float z = radius * (float)Math.Sin(latitude);
                 float xz = radius * (float)Math.Cos(latitude);
 
                 for (int j = 0; j <= numLongitudes; j++)
                 {
                     float longitude = j * longitudeStep;
                     float x = xz * (float)Math.Cos(longitude);
-                    float z = xz * (float)Math.Sin(longitude);
+                    float y = xz * (float)Math.Sin(longitude);
 
                     vertices.Add(new Vertex(x, y, z));
                 }
             });
 
-            // Define the triangles
-            // Parallelize the creation of triangles
             Parallel.For(0, numLatitudes, i => {
                 for (int j = 0; j < numLongitudes; j++)
                 {
                     int first = i * (numLongitudes + 1) + j;
                     int second = first + 1;
-                    int third = first + numLongitudes + 1;
+                    int third = (i + 1) * (numLongitudes + 1) + j;
                     int fourth = third + 1;
 
-                    mesh.triangulos.Add(new triangulo(vertices[first], vertices[third], vertices[second]));
-                    mesh.triangulos.Add(new triangulo(vertices[second], vertices[third], vertices[fourth]));
+                    mesh.triangulos.Add(new triangulo(vertices[first], vertices[second], vertices[third]));
+                    mesh.triangulos.Add(new triangulo(vertices[fourth], vertices[third], vertices[second]));
                 }
             });
         }
 
 
+        public void Sphere(float radius, int numSegments,Mesh mesh)
+        {
+
+            // Create the triangles that form the surface of the sphere
+            for (int i = 0; i < numSegments + 1; i++)
+            {
+
+                float lat0 = (float)Math.PI * (-0.5f + (float)(i - 1) / numSegments);
+                float z0 = (float)Math.Sin(lat0) * radius;
+                float zr0 = (float)Math.Cos(lat0) * radius;
+
+                float lat1 = (float)Math.PI * (-0.5f + (float)i / numSegments);
+                float z1 = (float)Math.Sin(lat1) * radius;
+                float zr1 = (float)Math.Cos(lat1) * radius;
+
+                for (int j = 0; j < numSegments; j++)
+                {
+                    float lng0 = (float)(2 * Math.PI * (float)(j - 1) / numSegments);
+                    float x0 = (float)Math.Cos(lng0) * zr0;
+                    float y0 = (float)Math.Sin(lng0) * zr0;
+
+                    float lng1 = (float)(2 * Math.PI * (float)j / numSegments);
+                    float x1 = (float)Math.Cos(lng1) * zr0;
+                    float y1 = (float)Math.Sin(lng1) * zr0;
+
+                    float x2 = (float)Math.Cos(lng0) * zr1;
+                    float y2 = (float)Math.Sin(lng0) * zr1;
+
+                    float x3 = (float)Math.Cos(lng1) * zr1;
+                    float y3 = (float)Math.Sin(lng1) * zr1;
+
+                    Vertex p0 = new Vertex(x0, y0, z0);
+                    Vertex p1 = new Vertex(x1, y1, z0);
+                    Vertex p2 = new Vertex(x2, y2, z1);
+                    Vertex p3 = new Vertex(x3, y3, z1);
+                    if (i == 0) { }
+                    else if (i == 1)
+                        mesh.triangulos.Add(new triangulo(p3, p2, p1));
+
+                    else
+                        mesh.triangulos.Add(new triangulo(p0, p1, p2));
+
+                }
+            }
+        }
     }
 }
