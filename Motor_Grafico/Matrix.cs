@@ -11,23 +11,22 @@ namespace Motor_Grafico
     
     public class Matrix
     {
-        private double[,] matrix_values;
-        public Matrix(double[,] matrix) {
-               matrix_values = matrix;
+        public Matrix() {
+            
         }
         public static Vertex multiMatrix(Vertex vertice, float[,] M)
         {
-            float x = (M[0, 0] * vertice.X) + (M[0, 1] * vertice.Y)  + (M[0, 2] * vertice.Z);
-            float y = (M[1, 0] * vertice.X) + (M[1, 1] * vertice.Y)  + (M[1, 2] * vertice.Z);
-            float z = (M[2, 0] * vertice.X) + (M[2, 1] * vertice.Y)  + (M[2, 2] * vertice.Z);
+            float x = (M[0, 0] * vertice.X) + (M[1, 0] * vertice.Y)  + (M[2, 0] * vertice.Z);
+            float y = (M[0, 1] * vertice.X) + (M[1, 1] * vertice.Y)  + (M[2, 1] * vertice.Z);
+            float z = (M[0, 2] * vertice.X) + (M[1, 2] * vertice.Y)  + (M[2, 2] * vertice.Z);
 
             return new Vertex(x,y,z);
         }
 
         
-        public static float[,] RotationX(float angle)
-        {
-
+        public  float[,] RotationX(float angle)
+        {      
+            angle = convertirRadiantes(angle);
             float sin = (float)Math.Sin(angle);
             float cos = (float)Math.Cos(angle);
 
@@ -39,9 +38,9 @@ namespace Motor_Grafico
             return rotationX;
         }
 
-        public static float[,] RotationY(float angle)
+        public  float[,] RotationY(float angle)
         {
-
+            angle = convertirRadiantes(angle);
             float sin = (float)Math.Sin(angle);
             float cos = (float)Math.Cos(angle);
 
@@ -53,9 +52,9 @@ namespace Motor_Grafico
             return rotationY;
         }
 
-        public static float[,] RotationZ(float angle)
+        public  float[,] RotationZ(float angle)
         {
-
+            angle = convertirRadiantes(angle);
             float sin = (float)Math.Sin(angle);
             float cos = (float)Math.Cos(angle);
 
@@ -67,5 +66,10 @@ namespace Motor_Grafico
             return rotationZ;
         }
 
+
+        public float convertirRadiantes(float angulo)
+        {
+            return angulo / 57.295f;
+        }
     }
 }
