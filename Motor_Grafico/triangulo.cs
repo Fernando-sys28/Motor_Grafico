@@ -10,15 +10,15 @@ namespace Motor_Grafico
     
     public class triangulo
     {
-        public Vertex a { get; set; }
-        public Vertex b { get; set; }
-        public Vertex c { get; set; }
+        public int a { get; set; }
+        public int b { get; set; }
+        public int c { get; set; }
 
         public Color color;
 
         public static Vertex Luz = new Vertex(-3, -3, 0);
         float h;
-        public triangulo(Vertex a, Vertex b, Vertex c, Color color)
+        public triangulo(int a, int b, int c, Color color)
         {
             this.a = a;
             this.b = b;
@@ -26,7 +26,7 @@ namespace Motor_Grafico
             this.color = color;
         }
 
-        public Vertex NormalTriangle(triangulo triangle)         
+       /* public Vertex NormalTriangle(triangulo triangle)         
         {
             Vertex N = new Vertex(0, 0, 0);
             Vertex normal = CalculateNormal(triangle.b, triangle.a, triangle.c);
@@ -38,9 +38,9 @@ namespace Motor_Grafico
             N.Z = normal.Z / normalize;
 
             return N;
-        }
+        }*/
 
-        public float shadow(triangulo triangle)
+       /* public float shadow(triangulo triangle)
         {
             Vertex N = new Vertex(0, 0, 0);
             Vertex normal = CalculateNormal(triangle.a, triangle.b, triangle.c);
@@ -56,7 +56,7 @@ namespace Motor_Grafico
             float longitudDireccion = (float)Math.Sqrt(Luz.X * Luz.X + Luz.Y * Luz.Y + Luz.Z * Luz.Z);
             h = (productoPunto / (longitudNormal * longitudDireccion) + 1) / 2;
             return h;
-        }
+        }*/
 
         private Vertex CalculateNormal(Vertex a, Vertex b, Vertex c)
         {

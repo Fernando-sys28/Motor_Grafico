@@ -7,36 +7,40 @@ using System.Threading.Tasks;
 
 namespace Motor_Grafico
 {
-    public class Cube : Mesh
+    /*public class Cube : Mesh
     {
 
         public Cube() {
 
-            Vertex a = new Vertex(1, 1, 1);
-            Vertex b = new Vertex(-1, 1, 1);
-            Vertex c = new Vertex(-1, -1, 1);
-            Vertex d = new Vertex(1, -1, 1);
-            Vertex e = new Vertex(1, 1, -1);
-            Vertex f = new Vertex(-1, 1, -1);
-            Vertex g = new Vertex(-1, -1, -1);
-            Vertex h = new Vertex(1, -1, -1);
+            Vertex[] vertices = new Vertex[] {
+                                            new Vertex(1, 1, 1),
+                                            new Vertex(-1, 1, 1),
+                                            new Vertex(-1, -1, 1),
+                                            new Vertex(1, -1, 1),
+                                            new Vertex(1, 1, -1),
+                                            new Vertex(-1, 1, -1),
+                                            new Vertex(-1, -1, -1),
+                                            new Vertex(1, -1, -1)
+                                        };
 
-            triangulo[] triangles = new triangulo[12];
-            triangles[0] = new triangulo(a, b, c, Color.Red);
-            triangles[1] = new triangulo(a, c, d, Color.Red);
-            triangles[2] = new triangulo(e, a, d,Color.Green);
-            triangles[3] = new triangulo(e, d, h, Color.Green);
-            triangles[4] = new triangulo(f, e, h, Color.Blue);
-            triangles[5] = new triangulo(f, h, g, Color.Blue);
-            triangles[6] = new triangulo(b, f, g, Color.Yellow);
-            triangles[7] = new triangulo(b, g, c, Color.Yellow);
-            triangles[8] = new triangulo(e, f, b, Color.Purple);
-            triangles[9] = new triangulo(e, b, a, Color.Purple);
-            triangles[10] = new triangulo(c, g, h, Color.Cyan);
-            triangles[11] = new triangulo(c, h, d, Color.Cyan);
 
-            triangulos.AddRange(triangles);
+            triangulo[] triangles = new triangulo[] {
+                                            new triangulo(0, 1, 2, Color.Red),
+                                            new triangulo(0, 2, 3, Color.Red),
+                                            new triangulo(4, 0, 3, Color.Green),
+                                            new triangulo(4, 3, 7, Color.Green),
+                                            new triangulo(5, 4, 7, Color.Blue),//-----------------------
+                                            new triangulo(5, 7, 6, Color.Blue),
+                                            new triangulo(1, 5, 6, Color.Yellow),
+                                            new triangulo(1, 6, 2, Color.Yellow),
+                                            new triangulo(4, 5, 1, Color.Purple),
+                                            new triangulo(4, 1, 0, Color.Purple),
+                                            new triangulo(2, 6, 7, Color.Cyan),
+                                            new triangulo(2, 7, 3, Color.Cyan)
+                                           };
+
+            //triangulos.AddRange(triangles);
 
         }
-    }
+    }*/
 }

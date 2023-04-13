@@ -8,36 +8,28 @@ namespace Motor_Grafico
 {   
     public class Mesh
     {
-        Matrix m;
-        public List<triangulo> triangulos;
-        float[,] RotationX, RotationY, RotationZ;
-        public Mesh()
+
+        public Vertex[] vertices;
+        public triangulo[] triangulos;
+        //public List<triangulo> triangulos;
+        Matrix RotationX, RotationY, RotationZ;
+        public Mesh(Vertex[] vertices, triangulo[] triangulos)
         {
-            triangulos = new List<triangulo>();
-            m = new Matrix();
+            this.vertices = vertices;
+            this.triangulos = triangulos;
+            //m = new Matrix();
         }
 
-        public triangulo RotateX(float angle, triangulo t){
+       public Vertex RotateX(float angle, Vertex v){
 
-            RotationX = m.RotationX(angle);
-            triangulo triangle = t;
+            RotationX = Matrix.RotX(angle);
+            Vertex vertice = v;
+            vertice = RotationX * vertice;;
 
-            Vertex vertexA = triangle.a;
-            Vertex vertexB = triangle.b;
-            Vertex vertexC = triangle.c;
-
-            vertexA = Matrix.multiMatrix(vertexA, RotationX);
-            vertexB = Matrix.multiMatrix(vertexB, RotationX);
-            vertexC = Matrix.multiMatrix(vertexC, RotationX);
-
-            triangle.a = vertexA;
-            triangle.b = vertexB;
-            triangle.c = vertexC;
-
-            return triangle;
+            return vertice;
         }
 
-        public triangulo RotateY(float angle, triangulo t)
+        /*public triangulo RotateY(float angle, triangulo t)
         {
             RotationY = m.RotationY(angle);
             triangulo triangle = t;
@@ -75,7 +67,7 @@ namespace Motor_Grafico
             triangle.c = vertexC;
 
             return triangle;
-        }
+        }*/
 
 
     }

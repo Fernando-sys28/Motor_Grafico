@@ -15,26 +15,16 @@ namespace Motor_Grafico
     public class Canvas
     {
         public Bitmap bitmap;
-        public float Width, Height;
+        public int Width, Height;
         public Byte[] bits;
         Graphics g;
         int pixelFormatSize, stride;
-        Bitmap canvas;
-        Graphics canvas_context;
-        int canvas_width;
-        int canvas_height;
         float viewport_size = 1;
         float projection_plane_z = 1;
 
         public Canvas(Size size)
         {
             init(size.Width, size.Height);
-
-            canvas = new Bitmap(size.Width, size.Height);
-            canvas_context = Graphics.FromImage(canvas);
-            canvas_width = canvas.Width;
-            canvas_height = canvas.Height;
-
         }
 
         public void init(int width, int height)
@@ -58,11 +48,10 @@ namespace Motor_Grafico
             bitmap = new Bitmap(width, height, stride, format, bitPtr);
             g = Graphics.FromImage(bitmap);
 
-
-
+            
         }
 
-        /*public void DrawPixel(int x, int y, Color c)
+        public void setPixel(int x, int y, Color c)
         {
             long res = (int)((x * pixelFormatSize) + (y * stride));
 
@@ -70,21 +59,19 @@ namespace Motor_Grafico
             bits[res + 1] = c.G;// (byte)Green;
             bits[res + 2] = c.R;// (byte)Red;
             bits[res + 3] = c.A;// (byte)Alpha;
-        }*/
+        }
 
-
-        // The PutPixel() function.
         public void DrawPixel(int x, int y, Color color)
         {
-            x = canvas_width / 2 + x;
-            y = canvas_height / 2 - y - 1;
+            x = Width / 2 + x;
+            y = Height / 2 - y - 1;
 
-            if (x < 0 || x >= canvas_width || y < 0 || y >= canvas_height)
+            if (x < 0 || x >= Width || y < 0 || y >= Height)
             {
                 return;
             }
 
-            canvas.SetPixel(x, y, color);
+            setPixel(x, y, color);
         }
 
 
@@ -314,40 +301,36 @@ namespace Motor_Grafico
         // Converts 2D viewport coordinates to 2D canvas coordinates.
         Vertex ViewportToCanvas(Vertex p2d)
         {
-            float vW = (float)canvas.Width / canvas.Height;
-            return new Vertex((p2d.X * canvas.Width / vW), (p2d.Y * canvas.Height / viewport_size), 0);
+            float vW = (float)bitmap.Width / bitmap.Height;      
+            return new Vertex((p2d.X * bitmap.Width / vW), (p2d.Y * bitmap.Height / viewport_size), 0);
         }
 
-        Vertex ProjectVertex(Vertex v)
+        public Vertex ProjectVertex(Vertex v)
         {
-            return ViewportToCanvas(new Vertex(v.X * projection_plane_z / v.Z, v.Y * projection_plane_z / v.Z, 0));
+            return ViewportToCanvas(new Vertex(v.X * projection_plane_z  / (8 - v.Z), v.Y * projection_plane_z/ (8 - v.Z), 0));
         }
 
         public void RenderTriangle(triangulo triangle, List<Vertex> projected)
         {
-           // DrawWireframeTriangle(projected[triangle.a[0]], projected[triangle.b], projected[triangle.c], triangle.color);
+            DrawWireFrameTriangle(projected[triangle.a], projected[triangle.b], projected[triangle.c], triangle.color);
         }
 
 
-        public void RenderModel(Mesh mesh)
+       public void RenderModel(Mesh mesh)
         {
             // we would have to test here the best fit to
             // translate this to the GPU for massive parallelism
             List<Vertex> projected = new List<Vertex>();
 
-             for (int i = 0; i < mesh.triangulos.Count; i++)
-             {
-                 triangulo triangle = mesh.triangulos[i];
-                 projected.Add(ProjectVertex(triangle.a));
-                 projected.Add(ProjectVertex(triangle.b));
-                 projected.Add(ProjectVertex(triangle.c));
-             }
+            for (int i = 0; i < mesh.vertices.Length; i++)
+            {
+                projected.Add(ProjectVertex(mesh.vertices[i]));
+            }
 
-             for (int i = 0; i < projected.Count-1; i++)
-             {
-                
-                 RenderTriangle(mesh.triangulos[i], projected);
-             }
+            for (int i = 0; i < mesh.triangulos.Length; i++)
+            {
+                RenderTriangle(mesh.triangulos[i], projected);
+            }
         }
     }
 }

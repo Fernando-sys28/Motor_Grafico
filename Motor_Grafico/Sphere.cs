@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Motor_Grafico
 {
-    public class Sphere:Mesh
+    /*public class Sphere:Mesh
     {
         /*public Sphere(float radius, int numSegments) {
             for (int i = 0; i < numSegments + 1; i++)
@@ -52,6 +52,6 @@ namespace Motor_Grafico
                     }
                 }
             }
-        }*/
-    }
+        }
+    }*/
 }
