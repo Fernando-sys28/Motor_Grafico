@@ -8,7 +8,7 @@ namespace Motor_Grafico
 {
     public class Sphere:Mesh
     {
-        public Sphere(float radius, int numSegments) {
+        /*public Sphere(float radius, int numSegments) {
             for (int i = 0; i < numSegments + 1; i++)
             {
                 float latitud0 = (float)Math.PI * (-0.5f + (float)(i - 1) / numSegments);
@@ -47,11 +47,11 @@ namespace Motor_Grafico
                     }
                     else
                     {
-                        triangulos.Add(new triangulo(v3, v2, v1));
+                       // triangulos.Add(new triangulo(v3, v2, v1));
                         triangulos.Add(new triangulo(v2, v0, v1));
                     }
                 }
             }
-        }
+        }*/
     }
 }

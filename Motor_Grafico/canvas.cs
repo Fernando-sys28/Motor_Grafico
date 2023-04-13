@@ -6,6 +6,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Windows.Forms;
 
 namespace Motor_Grafico
 {
@@ -16,10 +19,22 @@ namespace Motor_Grafico
         public Byte[] bits;
         Graphics g;
         int pixelFormatSize, stride;
+        Bitmap canvas;
+        Graphics canvas_context;
+        int canvas_width;
+        int canvas_height;
+        float viewport_size = 1;
+        float projection_plane_z = 1;
 
         public Canvas(Size size)
         {
             init(size.Width, size.Height);
+
+            canvas = new Bitmap(size.Width, size.Height);
+            canvas_context = Graphics.FromImage(canvas);
+            canvas_width = canvas.Width;
+            canvas_height = canvas.Height;
+
         }
 
         public void init(int width, int height)
@@ -47,7 +62,7 @@ namespace Motor_Grafico
 
         }
 
-        public void DrawPixel(int x, int y, Color c)
+        /*public void DrawPixel(int x, int y, Color c)
         {
             long res = (int)((x * pixelFormatSize) + (y * stride));
 
@@ -55,7 +70,23 @@ namespace Motor_Grafico
             bits[res + 1] = c.G;// (byte)Green;
             bits[res + 2] = c.R;// (byte)Red;
             bits[res + 3] = c.A;// (byte)Alpha;
+        }*/
+
+
+        // The PutPixel() function.
+        public void DrawPixel(int x, int y, Color color)
+        {
+            x = canvas_width / 2 + x;
+            y = canvas_height / 2 - y - 1;
+
+            if (x < 0 || x >= canvas_width || y < 0 || y >= canvas_height)
+            {
+                return;
+            }
+
+            canvas.SetPixel(x, y, color);
         }
+
 
         public void FastClear()
         {
@@ -82,16 +113,16 @@ namespace Motor_Grafico
             }
         }
 
-        public void DrawLine(PointF P0, PointF P1, Color color)
+        public void DrawLine(Vertex P0, Vertex P1, Color color)
         {
 
             if ((Math.Abs(P1.X - P0.X)) > (Math.Abs(P1.Y - P0.Y)))
             {
                 if (P0.X > P1.X)
                 {
-                    PointF emp = P0;
+                    Vertex temp = P0;
                     P0 = P1;
-                    P1 = emp;
+                    P1 = temp;
                 }
                 List<float> ys = Interpolate(P0.X, P0.Y, P1.X, P1.Y);
 
@@ -104,9 +135,9 @@ namespace Motor_Grafico
             {
                 if (P0.Y > P1.Y)
                 {
-                    PointF emp = P0;
+                    Vertex temp = P0;
                     P0 = P1;
-                    P1 = emp;
+                    P1 = temp;
                 }
                 List<float> xs = Interpolate(P0.Y, P0.X, P1.Y, P1.X);
                 for (float y = P0.Y; y <= P1.Y; y++)
@@ -116,7 +147,7 @@ namespace Motor_Grafico
             }
         }
 
-        public void DrawWireFrameTriangle(PointF p0, PointF p1, PointF p2, Color color)
+        public void DrawWireFrameTriangle(Vertex p0, Vertex p1, Vertex p2, Color color)
         {
             DrawLine(p0, p1, color);
             DrawLine(p1, p2, color);
@@ -277,6 +308,46 @@ namespace Motor_Grafico
                 }
             }
 
+        }
+
+
+        // Converts 2D viewport coordinates to 2D canvas coordinates.
+        Vertex ViewportToCanvas(Vertex p2d)
+        {
+            float vW = (float)canvas.Width / canvas.Height;
+            return new Vertex((p2d.X * canvas.Width / vW), (p2d.Y * canvas.Height / viewport_size), 0);
+        }
+
+        Vertex ProjectVertex(Vertex v)
+        {
+            return ViewportToCanvas(new Vertex(v.X * projection_plane_z / v.Z, v.Y * projection_plane_z / v.Z, 0));
+        }
+
+        public void RenderTriangle(triangulo triangle, List<Vertex> projected)
+        {
+           // DrawWireframeTriangle(projected[triangle.a[0]], projected[triangle.b], projected[triangle.c], triangle.color);
+        }
+
+
+        public void RenderModel(Mesh mesh)
+        {
+            // we would have to test here the best fit to
+            // translate this to the GPU for massive parallelism
+            List<Vertex> projected = new List<Vertex>();
+
+             for (int i = 0; i < mesh.triangulos.Count; i++)
+             {
+                 triangulo triangle = mesh.triangulos[i];
+                 projected.Add(ProjectVertex(triangle.a));
+                 projected.Add(ProjectVertex(triangle.b));
+                 projected.Add(ProjectVertex(triangle.c));
+             }
+
+             for (int i = 0; i < projected.Count-1; i++)
+             {
+                
+                 RenderTriangle(mesh.triangulos[i], projected);
+             }
         }
     }
 }

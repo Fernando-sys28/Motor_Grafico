@@ -34,6 +34,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
         private void timer1_Tick(object sender, EventArgs j)
         {
             Draw();
+            //canvas.RenderModel(scena.mesh);
             if (RX == true)
             {
                 for (int i = 0; i < scena.mesh.triangulos.Count; i++)
@@ -63,37 +64,36 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
         public void Draw()
         {
             canvas.FastClear();
-            canvas.DrawLine(new PointF(0, pictureBox1.Height / 2-1), new PointF(pictureBox1.Width-1, pictureBox1.Height / 2-1), Color.Gray);
-            canvas.DrawLine(new PointF(pictureBox1.Width / 2-1, 0), new PointF(pictureBox1.Width / 2-1, pictureBox1.Height-1), Color.Gray);
-
-            foreach (triangulo triangle in scena.mesh.triangulos)
+            //canvas.DrawLine(new PointF(0, pictureBox1.Height / 2-1), new PointF(pictureBox1.Width-1, pictureBox1.Height / 2-1), Color.Gray);
+            //canvas.DrawLine(new PointF(pictureBox1.Width / 2-1, 0), new PointF(pictureBox1.Width / 2-1, pictureBox1.Height-1), Color.Gray);
+            for (int i = 0; i < scena.mesh.triangulos.Count; i++)
             {
+                triangulo triangle = scena.mesh.triangulos[i];
                 Vertex N = triangle.NormalTriangle(triangle);
                 float h = triangle.shadow(triangle);
 
                 if (N.Z < 0)
                 {
-                    PointF a = triangle.a.ConvertToPointF(triangle.a.X * 100 / (3 + triangle.a.Z), triangle.a.Y * 100 / (3 + triangle.a.Z));
-                    PointF b = triangle.b.ConvertToPointF(triangle.b.X * 100 / (3 + triangle.b.Z), triangle.b.Y * 100 / (3 + triangle.b.Z));
-                    PointF c = triangle.c.ConvertToPointF(triangle.c.X * 100 / (3 + triangle.c.Z), triangle.c.Y * 100 / (3 + triangle.c.Z));
 
-                    int Sx = (pictureBox1.Width / 2);
-                    int Sy = (pictureBox1.Height / 2);
-                    PointF a1, b1, c1;
-                    a1= new PointF(Sx + a.X, Sy - a.Y);
-                    b1 = new PointF(Sx + b.X, Sy - b.Y);
-                    c1 = new PointF(Sx + c.X, Sy - c.Y);
+                     /*PointF a = triangle.a.ConvertToPointF(triangle.a.X * 100 / (3 - triangle.a.Z), triangle.a.Y * 100 / (3 - triangle.a.Z));
+                     PointF b = triangle.b.ConvertToPointF(triangle.b.X * 100 / (3 - triangle.b.Z), triangle.b.Y * 100 / (3 - triangle.b.Z));
+                     PointF c = triangle.c.ConvertToPointF(triangle.c.X * 100 / (3 - triangle.c.Z), triangle.c.Y * 100 / (3 - triangle.c.Z));
 
-                    canvas.FillTriangle(a1, b1, c1, Color.LightSeaGreen);
-                    canvas.DrawLine(a1, b1, Color.Black);
-                    canvas.DrawLine(b1, c1, Color.Black);
-                    canvas.DrawLine(c1, a1, Color.Black);
-                    //canvas.DrawShadedTriangle(a1, b1, c1, Color.LightSeaGreen);
+                     int Sx = (pictureBox1.Width / 2);
+                     int Sy = (pictureBox1.Height / 2);
+                     PointF a1, b1, c1;
+                     a1 = new PointF(Sx + a.X, Sy - a.Y);
+                     b1 = new PointF(Sx + b.X, Sy - b.Y);
+                     c1 = new PointF(Sx + c.X, Sy - c.Y);
+
+                     canvas.FillTriangle(a1, c1, b1, Color.LightSeaGreen);
+                     canvas.DrawLine(a1, b1, Color.Black);
+                     canvas.DrawLine(b1, c1, Color.Black);
+                     canvas.DrawLine(c1, a1, Color.Black);*/
                 }
             }
-
         }
-
+         
         private void button1_Click(object sender, EventArgs e)
         {
             RX = true;
@@ -129,22 +129,22 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
         private void button6_Click(object sender, EventArgs e)
         {
 
-            scena.mesh = new Cylinder(1f, 2.5f, 20);
+            //scena.mesh = new Cylinder(1f, 2.5f, 20);
         }
 
         private void button7_Click(object sender, EventArgs e)
         {
-            scena.mesh = new Sphere(2f,20);
+            //scena.mesh = new Sphere(2f,30);
         }
 
         private void button9_Click(object sender, EventArgs e)
         {
-            scena.mesh = new Cone(1f,2f,15);
+            //scena.mesh = new Cone(1f,2f,15);
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            scena.mesh = new Cylinder(1f, 2.5f, 5);
+            //scena.mesh = new Cylinder(1f, 2.5f, 5);
 
         }
 

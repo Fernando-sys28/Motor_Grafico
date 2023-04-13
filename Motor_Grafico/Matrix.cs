@@ -45,8 +45,8 @@ namespace Motor_Grafico
             float cos = (float)Math.Cos(angle);
 
             float[,] rotationY = new float[3, 3] {
-                {cos, 0, sin},
-                {0, 1, 0},
+                { cos, 0, sin},
+                { 0  , 1, 0  },
                 {-sin, 0, cos}
             };
             return rotationY;

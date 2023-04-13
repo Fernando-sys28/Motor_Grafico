@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Motor_Grafico
 {
-    public class Cylinder :Mesh
+    /*public class Cylinder :Mesh
     {
         public Cylinder( float radius, float height, int numSegments) {
             Vertex center = new Vertex(0, 0, 0);
@@ -27,5 +27,5 @@ namespace Motor_Grafico
                 triangulos.Add(new triangulo(v5, v3, v6));
             }
         }
-    }
+    }*/
 }

@@ -8,7 +8,7 @@ namespace Motor_Grafico
 {
     public class Cone : Mesh
     {
-        public Cone( float radius, float height, int numSegments) {
+        /*public Cone( float radius, float height, int numSegments) {
             Scene s = new Scene();
             Vertex center = new Vertex(0, 0, 0);
             for (int i = 0; i < numSegments; i++)
@@ -34,6 +34,6 @@ namespace Motor_Grafico
 
                 triangulos.Add(new triangulo(v1, v2, v3));
             }
-        }   
+        } */  
     }
 }

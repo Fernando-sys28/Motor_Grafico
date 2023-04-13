@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,22 +10,28 @@ namespace Motor_Grafico
     
     public class triangulo
     {
-        public Vertex a, b, c;
+        public Vertex a { get; set; }
+        public Vertex b { get; set; }
+        public Vertex c { get; set; }
+
+        public Color color;
+
         public static Vertex Luz = new Vertex(-3, -3, 0);
         float h;
-        public triangulo(Vertex a, Vertex b, Vertex c)
+        public triangulo(Vertex a, Vertex b, Vertex c, Color color)
         {
             this.a = a;
             this.b = b;
             this.c = c;
+            this.color = color;
         }
 
-        public Vertex NormalTriangle(triangulo triangle)
+        public Vertex NormalTriangle(triangulo triangle)         
         {
             Vertex N = new Vertex(0, 0, 0);
-            Vertex normal = CalculateNormal(triangle.a, triangle.b, triangle.c);
+            Vertex normal = CalculateNormal(triangle.b, triangle.a, triangle.c);
             Vertex camara = new Vertex(0, 0, -1);
-            float normalize = (float)Math.Sqrt(DotProduct(camara, normal));
+            float normalize = (float)Math.Sqrt(DotProduct(normal, camara));
 
             N.X = normal.X / normalize;
             N.Y = normal.Y / normalize;
@@ -50,6 +57,7 @@ namespace Motor_Grafico
             h = (productoPunto / (longitudNormal * longitudDireccion) + 1) / 2;
             return h;
         }
+
         private Vertex CalculateNormal(Vertex a, Vertex b, Vertex c)
         {
             Vertex edge1 = new Vertex(b.X - a.X, b.Y - a.Y, b.Z - a.Z);
