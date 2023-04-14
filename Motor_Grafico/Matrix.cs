@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Motor_Grafico
 {
-    
+
     public class Matrix
     {
         public float[,] data;

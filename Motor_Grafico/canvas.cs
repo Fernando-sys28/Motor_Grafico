@@ -10,6 +10,7 @@ using System.Reflection;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Windows.Forms;
 using System.Management.Instrumentation;
+using static System.Windows.Forms.AxHost;
 
 namespace Motor_Grafico
 {
@@ -23,7 +24,9 @@ namespace Motor_Grafico
         float viewport_size = 1;
         float projection_plane_z = 1;
 
-        Camara camera = new Camara(new Vertex(1, 1, 1), Matrix.RotY(0));
+        float[,] m;
+
+        Camara camera = new Camara(new Vertex(0, 0, 0), Matrix.RotY(20));
 
         public Canvas(Size size)
         {
@@ -52,6 +55,30 @@ namespace Motor_Grafico
             g = Graphics.FromImage(bitmap);
 
             
+        }
+
+        public void Render(Scene[] scena)
+        {
+            RenderScene(camera, scena);
+        }
+        public Matrix POV()
+        {
+            float a = 90; // aperture DEGREES
+            float r = 1; // aspecto ratio
+            float zNear = 1f;
+            float zFar = 10000;
+            float fov = (float)((Math.PI / 180) * (a));//aperture rads
+            float tanHalfFOV = (float)Math.Tan(fov / 2);
+            float zRange = zNear - zFar;
+            float f = 1.0f / tanHalfFOV;
+            float q = (zNear + zFar) / zRange;
+            m = new float[,]{
+                            {f*r, 0 , 0 , 0 },
+                            {0 , f , 0 , 0 },
+                            {0 , 0 , -q , 2*zNear*q },
+                            {0 , 0 , 1 , 0 }
+};
+            return new Matrix(m);
         }
 
         public void setPixel(int x, int y, Color c)
@@ -102,37 +129,46 @@ namespace Motor_Grafico
                 bitmap.UnlockBits(bitmapData);
             }
         }
-
-        public void DrawLine(Vertex P0, Vertex P1, Color color)
+        private void Swap(ref Vertex a, ref Vertex b)
         {
+            Vertex temp = a;
+            a = b;
+            b = temp;
+        }
 
-            if ((Math.Abs(P1.X - P0.X)) > (Math.Abs(P1.Y - P0.Y)))
+        void DrawLine(Vertex p0, Vertex p1, Color color)
+        {
+            var dx = p1.X - p0.X;
+            var dy = p1.Y - p0.Y;
+
+            if (Math.Abs(dx) > Math.Abs(dy))
             {
-                if (P0.X > P1.X)
+                // The line is horizontal-ish. Make sure it's left to right.
+                if (dx < 0)
                 {
-                    Vertex temp = P0;
-                    P0 = P1;
-                    P1 = temp;
+                    Swap(ref p0, ref p1);
                 }
-                List<float> ys = Interpolate(P0.X, P0.Y, P1.X, P1.Y);
 
-                for (float x = P0.X; x <= P1.X; x++)
+                // Compute the Y values and draw.
+                var ys = Interpolate((int)p0.X, p0.Y, (int)p1.X, p1.Y);
+                for (var x = (int)p0.X; x <= p1.X; x++)
                 {
-                    DrawPixel((int)x, (int)ys[(int)x - (int)P0.X], color);
+                    DrawPixel(x, (int)ys[(x - (int)p0.X)], color);
                 }
             }
             else
             {
-                if (P0.Y > P1.Y)
+                // The line is vertical-ish. Make sure it's bottom to top.
+                if (dy < 0)
                 {
-                    Vertex temp = P0;
-                    P0 = P1;
-                    P1 = temp;
+                    Swap(ref p0, ref p1);
                 }
-                List<float> xs = Interpolate(P0.Y, P0.X, P1.Y, P1.X);
-                for (float y = P0.Y; y <= P1.Y; y++)
+
+                // Compute the X values and draw.
+                var xs = Interpolate((int)p0.Y, p0.X, (int)p1.Y, p1.X);
+                for (var y = (int)p0.Y; y <= p1.Y; y++)
                 {
-                    DrawPixel((int)xs[(int)y - (int)P0.Y], (int)y, color);
+                    DrawPixel((int)xs[(y - (int)p0.Y)], y, color);
                 }
             }
         }
@@ -319,131 +355,60 @@ namespace Motor_Grafico
         }
 
 
-       public void RenderModel(Mesh mesh)
+       public void RenderModel(Mesh model, Matrix transform)
         {
             // we would have to test here the best fit to
             // translate this to the GPU for massive parallelism
             List<Vertex> projected = new List<Vertex>();
-            //Mesh mesh = model.mesh;
 
-            for (int i = 0; i < mesh.vertices.Length; i++)
-            {
-                projected.Add(ProjectVertex(mesh.vertices[i]));
-            }
-
-            for (int i = 0; i < mesh.triangulos.Length; i++)
-            {
-                RenderTriangle(mesh.triangulos[i], projected);
-            }
-        }
-
-        private Vertex ApplyTransform(Vertex v, Transform transform)
-        {
-            Vertex vertex;
-            vertex = new Vertex(v.X, v.Y, v.Z);
-            vertex *= transform.scale;
-            if (transform.rotation != null)
-            {
-                vertex= transform.rotation;
-            }
-            vertex += transform.traslation;
-            return vertex;
-        }
-
-        // Clips a triangle against a plane. Adds output to triangles and vertices.
-        private List<triangulo> ClipTriangle(triangulo triangle, Plane plane, List<triangulo> triangles, List<Vertex> vertices)
-        {
-            Vertex v0 = vertices[triangle.a];
-            Vertex v1 = vertices[triangle.b];
-            Vertex v2 = vertices[triangle.c];
-
-            // vertices in front of the camera
-            bool in0 = ((plane.normal * v0) + plane.Distance) > 0;
-            bool in1 = ((plane.normal * v1) + plane.Distance) > 0;
-            bool in2 = ((plane.normal * v2) + plane.Distance) > 0;
-
-            int in_count = (in0 ? 1 : 0) + (in1 ? 1 : 0) + (in2 ? 1 : 0);
-
-            if (in_count == 0)
-            {
-                //Console.WriteLine("count zero");
-                // Nothing to do - the triangle is fully clipped out.
-            }
-            else if (in_count == 3)
-            {
-                // The triangle is fully in front of the plane.
-                triangles.Add(triangle);
-            }
-            else if (in_count == 1)// one positive  
-            {
-                //Console.WriteLine("count one");
-                // The triangle has one vertex in. Output is one clipped triangle.
-            }
-            else if (in_count == 2)// one negative
-            {
-                //Console.WriteLine("count two");
-                // The triangle has two vertices in. Output is two clipped triangles.
-            }
-
-            return triangles;
-        }
-
-        private Mesh TransformAndClip(Plane[] clipping_planes, Mesh model, float scale, Vertex transform)
-        {
-            // Transform the bounding sphere, and attempt early discard.
-            Vertex center = transform * model.bounds_center;
-            float radius = model.bounds_radius * scale;
-            for (int p = 0; p < clipping_planes.Length; p++)
-            {
-                float distance = (clipping_planes[p].normal * center) + clipping_planes[p].Distance;
-                if (distance < -radius)
-                {
-                    return null;
-                }
-            }
-
-            // Apply modelview transform.
-            List<Vertex> vertices = new List<Vertex>();
             for (int i = 0; i < model.vertices.Length; i++)
             {
-                vertices.Add(transform * model.vertices[i]);
+                projected.Add(ProjectVertex(transform * model.vertices[i]));
             }
 
-            // Clip the entire model against each successive plane.
-            List<triangulo> triangles = new List<triangulo>(model.triangulos);
-            for (int p = 0; p < clipping_planes.Length; p++)
+            for (int i = 0; i < model.triangulos.Length; i++)
             {
-                List<triangulo> new_triangles = new List<triangulo>();
-                for (int i = 0; i < triangles.Count; i++)
-                {
-                    new_triangles = (ClipTriangle(triangles[i], clipping_planes[p], new_triangles, vertices));
-                }
-                triangles.AddRange(new_triangles);
+                RenderTriangle(model.triangulos[i], projected);
             }
-
-            return new Mesh(vertices.ToArray(), triangles.ToArray(), center, model.bounds_radius);
         }
+
 
         public void RenderScene(Camara camera, Scene[] instances)
         {
             Matrix cameraMatrix;
-            
-            Mesh clipped;
+            Matrix transform;
 
             // if we want to use FOV here we also need to add the FOV matrix of the camera
             cameraMatrix = (camera.orientation.Transposed()) * Matrix.MakeTranslationMatrix(-camera.position);
             for (int i = 0; i < instances.Length; i++)
             {
-                
-                transform = (cameraMatrix * instances[i].transform);
-                clipped = TransformAndClip(camera.clipping_planes.ToArray(), instances[i].mesh, instances[i].transform.scale, transform);
+                transform = (cameraMatrix * instances[i].transform.transform());
 
-                if (clipped != null)
-                {
-                    RenderModel(clipped);
-                }
+                RenderModel(instances[i].mesh, transform);
             }
         }
+
+       /* public Vertex Function(Vertex v, Transform t, Camara cam)
+        {
+            Vertex resV;
+            Matrix resS, resT, rotX, rotY, rotZ, camT, camR, camF;
+            resV = new Vertex(v.X, v.Y, v.Z);
+            //- modelo
+            resS = scale.Scalar(t.Scale);
+            rotX = rot.RotX(t.Rotation.X);
+            rotY = rot.RotY(t.Rotation.Y);
+            rotZ = rot.RotZ(t.Rotation.Z);
+            resT = trans.Translate(t.Translation);
+            //- camara
+            camR = Matrix.Rotate(-cam.orientation);
+            camT = trans.Translate(-cam.Transformation.Translation);
+            camF = proj.FOV();
+            //- proyeccion
+            resV = v * (resP * camF * camT * camR * resT * rotY * rotX * rotZ * resS);
+            resV.X /= resV.Z;// Nos regresamos a coordenadas cartesianas
+            resV.Y /= resV.Z;// Nos regresamos a coordenadas cartesianas
+            return resV;
+        }*/
 
     }
 }

@@ -42,6 +42,7 @@
             this.button9 = new System.Windows.Forms.Button();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
+            this.btnBuscarArchivo = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
@@ -50,9 +51,10 @@
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.pictureBox1.Location = new System.Drawing.Point(222, 107);
+            this.pictureBox1.Location = new System.Drawing.Point(148, 70);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(1111, 675);
+            this.pictureBox1.Size = new System.Drawing.Size(741, 439);
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             // 
@@ -64,10 +66,9 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(56, 143);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.button1.Location = new System.Drawing.Point(37, 93);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(112, 35);
+            this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 2;
             this.button1.Text = "Rotar en X";
             this.button1.UseVisualStyleBackColor = true;
@@ -75,10 +76,9 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(56, 208);
-            this.button2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.button2.Location = new System.Drawing.Point(37, 135);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(112, 35);
+            this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 3;
             this.button2.Text = "Rotar en Y";
             this.button2.UseVisualStyleBackColor = true;
@@ -86,10 +86,9 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(56, 283);
-            this.button3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.button3.Location = new System.Drawing.Point(37, 184);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(112, 35);
+            this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 4;
             this.button3.Text = "Rotar en Z";
             this.button3.UseVisualStyleBackColor = true;
@@ -97,10 +96,9 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(56, 380);
-            this.button4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.button4.Location = new System.Drawing.Point(37, 247);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(112, 78);
+            this.button4.Size = new System.Drawing.Size(75, 51);
             this.button4.TabIndex = 5;
             this.button4.Text = "Rotar en XYZ";
             this.button4.UseVisualStyleBackColor = true;
@@ -108,10 +106,9 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(222, 14);
-            this.button5.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.button5.Location = new System.Drawing.Point(148, 9);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(112, 35);
+            this.button5.Size = new System.Drawing.Size(75, 23);
             this.button5.TabIndex = 6;
             this.button5.Text = "Cube";
             this.button5.UseVisualStyleBackColor = true;
@@ -119,10 +116,9 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(383, 14);
-            this.button6.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.button6.Location = new System.Drawing.Point(255, 9);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(112, 35);
+            this.button6.Size = new System.Drawing.Size(75, 23);
             this.button6.TabIndex = 7;
             this.button6.Text = "Cylinder";
             this.button6.UseVisualStyleBackColor = true;
@@ -130,10 +126,9 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(691, 14);
-            this.button7.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.button7.Location = new System.Drawing.Point(461, 9);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(112, 35);
+            this.button7.Size = new System.Drawing.Size(75, 23);
             this.button7.TabIndex = 8;
             this.button7.Text = "Sphere";
             this.button7.UseVisualStyleBackColor = true;
@@ -141,10 +136,9 @@
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(864, 3);
-            this.button8.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.button8.Location = new System.Drawing.Point(576, 2);
             this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(112, 82);
+            this.button8.Size = new System.Drawing.Size(75, 53);
             this.button8.TabIndex = 9;
             this.button8.Text = "Prisma pentagonal";
             this.button8.UseVisualStyleBackColor = true;
@@ -152,10 +146,9 @@
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(535, 14);
-            this.button9.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.button9.Location = new System.Drawing.Point(357, 9);
             this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(112, 35);
+            this.button9.Size = new System.Drawing.Size(75, 23);
             this.button9.TabIndex = 10;
             this.button9.Text = "Cone";
             this.button9.UseVisualStyleBackColor = true;
@@ -163,10 +156,11 @@
             // 
             // trackBar1
             // 
-            this.trackBar1.Location = new System.Drawing.Point(222, 805);
+            this.trackBar1.Location = new System.Drawing.Point(148, 523);
+            this.trackBar1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.trackBar1.Maximum = 50;
             this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(1111, 69);
+            this.trackBar1.Size = new System.Drawing.Size(741, 45);
             this.trackBar1.TabIndex = 11;
             this.trackBar1.Value = 25;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
@@ -175,22 +169,34 @@
             // 
             // trackBar2
             // 
-            this.trackBar2.Location = new System.Drawing.Point(1348, 107);
+            this.trackBar2.Location = new System.Drawing.Point(899, 70);
+            this.trackBar2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.trackBar2.Maximum = 50;
             this.trackBar2.Name = "trackBar2";
             this.trackBar2.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.trackBar2.Size = new System.Drawing.Size(69, 675);
+            this.trackBar2.Size = new System.Drawing.Size(45, 439);
             this.trackBar2.TabIndex = 12;
             this.trackBar2.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBar2.Value = 25;
             this.trackBar2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.trackBar2_MouseDown);
             this.trackBar2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.trackBar2_MouseMove);
             // 
+            // btnBuscarArchivo
+            // 
+            this.btnBuscarArchivo.Location = new System.Drawing.Point(28, 12);
+            this.btnBuscarArchivo.Name = "btnBuscarArchivo";
+            this.btnBuscarArchivo.Size = new System.Drawing.Size(84, 24);
+            this.btnBuscarArchivo.TabIndex = 13;
+            this.btnBuscarArchivo.Text = "Open OBJ";
+            this.btnBuscarArchivo.UseVisualStyleBackColor = true;
+            this.btnBuscarArchivo.Click += new System.EventHandler(this.btnBuscarArchivo_Click_1);
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1439, 886);
+            this.ClientSize = new System.Drawing.Size(959, 576);
+            this.Controls.Add(this.btnBuscarArchivo);
             this.Controls.Add(this.trackBar2);
             this.Controls.Add(this.trackBar1);
             this.Controls.Add(this.button9);
@@ -204,6 +210,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.pictureBox1);
             this.DoubleBuffered = true;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -230,6 +237,7 @@
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.TrackBar trackBar2;
+        private System.Windows.Forms.Button btnBuscarArchivo;
     }
 }
 

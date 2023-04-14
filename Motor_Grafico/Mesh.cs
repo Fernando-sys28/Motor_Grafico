@@ -13,12 +13,11 @@ namespace Motor_Grafico
         public triangulo[] triangulos;
         public Vertex bounds_center;
         public float bounds_radius;
-        public Mesh(Vertex[] vertices, triangulo[] triangulos, Vertex bounds_center, float bounds_radius)
+        public Mesh(Vertex[] vertices, triangulo[] triangulos)
         {
             this.vertices = vertices;
             this.triangulos = triangulos;
-            this.bounds_center = bounds_center;
-            this.bounds_radius = bounds_radius;
+
         }
 
     }

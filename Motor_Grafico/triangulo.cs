@@ -16,8 +16,6 @@ namespace Motor_Grafico
 
         public Color color;
 
-        public static Vertex Luz = new Vertex(-3, -3, 0);
-        float h;
         public triangulo(int a, int b, int c, Color color)
         {
             this.a = a;
