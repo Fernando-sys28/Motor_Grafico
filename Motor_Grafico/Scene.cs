@@ -12,11 +12,15 @@ namespace Motor_Grafico
    public class Scene
     {
         public Mesh mesh;
-        public Matrix rotation;
-        public Scene(Mesh mesh, Matrix rotation=null)
+        public Vertex position;
+        public Matrix orientation;
+
+        public Transform transform;
+        public Scene(Mesh mesh, Transform transform)
         {
             this.mesh= mesh;
-            this.rotation = rotation ?? Matrix.Identity;
+            this.transform = transform;
+
         }
     }
 }

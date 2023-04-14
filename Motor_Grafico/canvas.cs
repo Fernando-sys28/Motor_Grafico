@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using System.Windows.Forms;
+using System.Management.Instrumentation;
 
 namespace Motor_Grafico
 {
@@ -21,6 +22,8 @@ namespace Motor_Grafico
         int pixelFormatSize, stride;
         float viewport_size = 1;
         float projection_plane_z = 1;
+
+        Camara camera = new Camara(new Vertex(1, 1, 1), Matrix.RotY(0));
 
         public Canvas(Size size)
         {
@@ -136,7 +139,7 @@ namespace Motor_Grafico
 
         public void DrawWireFrameTriangle(Vertex p0, Vertex p1, Vertex p2, Color color)
         {
-            DrawLine(p0, p1, color);
+            DrawLine(p0, p1, color); 
             DrawLine(p1, p2, color);
             DrawLine(p2, p0, color);
         }
@@ -307,7 +310,7 @@ namespace Motor_Grafico
 
         public Vertex ProjectVertex(Vertex v)
         {
-            return ViewportToCanvas(new Vertex(v.X * projection_plane_z  / (8 - v.Z), v.Y * projection_plane_z/ (8 - v.Z), 0));
+            return ViewportToCanvas(new Vertex(v.X * projection_plane_z  / (v.Z), v.Y * projection_plane_z/ (v.Z), 0));
         }
 
         public void RenderTriangle(triangulo triangle, List<Vertex> projected)
@@ -321,6 +324,7 @@ namespace Motor_Grafico
             // we would have to test here the best fit to
             // translate this to the GPU for massive parallelism
             List<Vertex> projected = new List<Vertex>();
+            //Mesh mesh = model.mesh;
 
             for (int i = 0; i < mesh.vertices.Length; i++)
             {
@@ -332,5 +336,114 @@ namespace Motor_Grafico
                 RenderTriangle(mesh.triangulos[i], projected);
             }
         }
+
+        private Vertex ApplyTransform(Vertex v, Transform transform)
+        {
+            Vertex vertex;
+            vertex = new Vertex(v.X, v.Y, v.Z);
+            vertex *= transform.scale;
+            if (transform.rotation != null)
+            {
+                vertex= transform.rotation;
+            }
+            vertex += transform.traslation;
+            return vertex;
+        }
+
+        // Clips a triangle against a plane. Adds output to triangles and vertices.
+        private List<triangulo> ClipTriangle(triangulo triangle, Plane plane, List<triangulo> triangles, List<Vertex> vertices)
+        {
+            Vertex v0 = vertices[triangle.a];
+            Vertex v1 = vertices[triangle.b];
+            Vertex v2 = vertices[triangle.c];
+
+            // vertices in front of the camera
+            bool in0 = ((plane.normal * v0) + plane.Distance) > 0;
+            bool in1 = ((plane.normal * v1) + plane.Distance) > 0;
+            bool in2 = ((plane.normal * v2) + plane.Distance) > 0;
+
+            int in_count = (in0 ? 1 : 0) + (in1 ? 1 : 0) + (in2 ? 1 : 0);
+
+            if (in_count == 0)
+            {
+                //Console.WriteLine("count zero");
+                // Nothing to do - the triangle is fully clipped out.
+            }
+            else if (in_count == 3)
+            {
+                // The triangle is fully in front of the plane.
+                triangles.Add(triangle);
+            }
+            else if (in_count == 1)// one positive  
+            {
+                //Console.WriteLine("count one");
+                // The triangle has one vertex in. Output is one clipped triangle.
+            }
+            else if (in_count == 2)// one negative
+            {
+                //Console.WriteLine("count two");
+                // The triangle has two vertices in. Output is two clipped triangles.
+            }
+
+            return triangles;
+        }
+
+        private Mesh TransformAndClip(Plane[] clipping_planes, Mesh model, float scale, Vertex transform)
+        {
+            // Transform the bounding sphere, and attempt early discard.
+            Vertex center = transform * model.bounds_center;
+            float radius = model.bounds_radius * scale;
+            for (int p = 0; p < clipping_planes.Length; p++)
+            {
+                float distance = (clipping_planes[p].normal * center) + clipping_planes[p].Distance;
+                if (distance < -radius)
+                {
+                    return null;
+                }
+            }
+
+            // Apply modelview transform.
+            List<Vertex> vertices = new List<Vertex>();
+            for (int i = 0; i < model.vertices.Length; i++)
+            {
+                vertices.Add(transform * model.vertices[i]);
+            }
+
+            // Clip the entire model against each successive plane.
+            List<triangulo> triangles = new List<triangulo>(model.triangulos);
+            for (int p = 0; p < clipping_planes.Length; p++)
+            {
+                List<triangulo> new_triangles = new List<triangulo>();
+                for (int i = 0; i < triangles.Count; i++)
+                {
+                    new_triangles = (ClipTriangle(triangles[i], clipping_planes[p], new_triangles, vertices));
+                }
+                triangles.AddRange(new_triangles);
+            }
+
+            return new Mesh(vertices.ToArray(), triangles.ToArray(), center, model.bounds_radius);
+        }
+
+        public void RenderScene(Camara camera, Scene[] instances)
+        {
+            Matrix cameraMatrix;
+            
+            Mesh clipped;
+
+            // if we want to use FOV here we also need to add the FOV matrix of the camera
+            cameraMatrix = (camera.orientation.Transposed()) * Matrix.MakeTranslationMatrix(-camera.position);
+            for (int i = 0; i < instances.Length; i++)
+            {
+                
+                transform = (cameraMatrix * instances[i].transform);
+                clipped = TransformAndClip(camera.clipping_planes.ToArray(), instances[i].mesh, instances[i].transform.scale, transform);
+
+                if (clipped != null)
+                {
+                    RenderModel(clipped);
+                }
+            }
+        }
+
     }
 }

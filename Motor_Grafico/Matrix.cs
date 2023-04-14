@@ -24,7 +24,6 @@ namespace Motor_Grafico
             this.data = data;
         }
 
-
         public static Matrix Identity = new Matrix(new float[,] {
                 {1, 0, 0, 0},
                 {0, 1, 0, 0},
@@ -132,5 +131,29 @@ namespace Motor_Grafico
 
             return x * y * z;
         }
+
+
+        public static Matrix MakeTranslationMatrix(Vertex translation)
+        {
+            return new Matrix(new float[,] {
+                {1,  0,  0,  translation.X},
+                {0,  1,  0,  translation.Y},
+                {0,  0,  1,  translation.Z},
+                {0,  0,  0,              1}});
+        }
+
+        public Matrix Transposed()
+        {
+            Matrix result = new Matrix(new float[4, 4]);
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    result[i, j] = data[j, i];
+                }
+            }
+            return result;
+        }
+
     }
 }
