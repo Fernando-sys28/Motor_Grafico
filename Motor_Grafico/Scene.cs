@@ -16,6 +16,7 @@ namespace Motor_Grafico
         public Matrix orientation;
 
         public Transform transform;
+
         public Scene(Mesh mesh, Transform transform)
         {
             this.mesh= mesh;

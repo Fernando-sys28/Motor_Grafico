@@ -26,8 +26,8 @@ namespace Motor_Grafico
 
         float[,] m;
 
-        Camara camera = new Camara(new Vertex(0, 0, 0), Matrix.RotY(20));
-
+        public Camara camera = new Camara(new Vertex(0, 0, 0), Matrix.RotY(0));
+        public bool pintar { get; set; }
         public Canvas(Size size)
         {
             init(size.Width, size.Height);
@@ -39,7 +39,7 @@ namespace Motor_Grafico
             GCHandle handle;
             IntPtr bitPtr;
             int padding;
-
+            pintar = false;
             format = PixelFormat.Format32bppRgb;
             //bitmap= new Bitmap(width, height);
             Width = width;
@@ -63,7 +63,7 @@ namespace Motor_Grafico
         }
         public Matrix POV()
         {
-            float a = 90; // aperture DEGREES
+            float a = 120; // aperture DEGREES
             float r = 1; // aspecto ratio
             float zNear = 1f;
             float zFar = 10000;
@@ -198,26 +198,26 @@ namespace Motor_Grafico
             return values;
         }
 
-        public void FillTriangle(PointF p0, PointF p1, PointF p2, Color c)
+        public void FillTriangle(Vertex p0, Vertex p1, Vertex p2, Color c)
         {
             List<float> x_left;
             List<float> x_right;
 
             if (p1.Y < p0.Y)
             {
-                PointF p = p0;
+                Vertex p = p0;
                 p0 = p1;
                 p1 = p;
             }
             if (p2.Y < p0.Y)
             {
-                PointF p = p0;
+                Vertex p = p0;
                 p0 = p2;
                 p2 = p;
             }
             if (p2.Y < p1.Y)
             {
-                PointF p = p2;
+                Vertex p = p2;
                 p2 = p1;
                 p1 = p;
             }
@@ -226,30 +226,39 @@ namespace Motor_Grafico
             List<float> x12 = Interpolate(p1.Y, p1.X, p2.Y, p2.X);
             List<float> x02 = Interpolate(p0.Y, p0.X, p2.Y, p2.X);
 
-            x01.RemoveAt(x01.Count - 1);
+            //x01.RemoveAt(x01.Count - 1);
             List<float> x012 = new List<float>();
             x012.AddRange(x01);
             x012.AddRange(x12);
 
             int m = x02.Count / 2;
-            if (x02[m] < x012[m])
+            if (m >= 0 && m < x02.Count && m < x012.Count)
             {
-                x_left = x02;
-                x_right = x012;
-            }
-            else
-            {
-                x_left = x012;
-                x_right = x02;
-            }
-
-            for (int y =(int)p0.Y; y < p2.Y; y++)
-            {
-                for (float x = x_left[(int)y - (int)p0.Y]; x < x_right[(int)y - (int)p0.Y]; x++)
+                if (x02[m] < x012[m])
                 {
-                    DrawPixel((int)x, y, c);      
+                    x_left = x02;
+                    x_right = x012;
+                }
+                else
+                {
+                    x_left = x012;
+                    x_right = x02;
+                }
+
+                for (var y = (int)p0.Y; y < p2.Y; y++)
+                {
+                    int index = y - (int)p0.Y;
+                    if (index >= 0 && index < x_left.Count && index < x_right.Count)
+                    {
+                        for (var x = x_left[index]; x < x_right[index]; x++)
+                        {
+                            DrawPixel((int)x, y, c);
+                        }
+                    }
                 }
             }
+
+            
         }
 
         public void DrawShadedTriangle(PointF a, PointF b, PointF d, Color c)
@@ -352,6 +361,11 @@ namespace Motor_Grafico
         public void RenderTriangle(triangulo triangle, List<Vertex> projected)
         {
             DrawWireFrameTriangle(projected[triangle.a], projected[triangle.b], projected[triangle.c], triangle.color);
+
+            if (pintar)
+            {
+                FillTriangle(projected[triangle.a], projected[triangle.b], projected[triangle.c],Color.LightBlue);          
+            }
         }
 
 
@@ -379,7 +393,7 @@ namespace Motor_Grafico
             Matrix transform;
 
             // if we want to use FOV here we also need to add the FOV matrix of the camera
-            cameraMatrix = (camera.orientation.Transposed()) * Matrix.MakeTranslationMatrix(-camera.position);
+            cameraMatrix = (camera.orientation.Transposed()) * Matrix.MakeTranslationMatrix(-camera.position) * POV();
             for (int i = 0; i < instances.Length; i++)
             {
                 transform = (cameraMatrix * instances[i].transform.transform());
@@ -387,28 +401,6 @@ namespace Motor_Grafico
                 RenderModel(instances[i].mesh, transform);
             }
         }
-
-       /* public Vertex Function(Vertex v, Transform t, Camara cam)
-        {
-            Vertex resV;
-            Matrix resS, resT, rotX, rotY, rotZ, camT, camR, camF;
-            resV = new Vertex(v.X, v.Y, v.Z);
-            //- modelo
-            resS = scale.Scalar(t.Scale);
-            rotX = rot.RotX(t.Rotation.X);
-            rotY = rot.RotY(t.Rotation.Y);
-            rotZ = rot.RotZ(t.Rotation.Z);
-            resT = trans.Translate(t.Translation);
-            //- camara
-            camR = Matrix.Rotate(-cam.orientation);
-            camT = trans.Translate(-cam.Transformation.Translation);
-            camF = proj.FOV();
-            //- proyeccion
-            resV = v * (resP * camF * camT * camR * resT * rotY * rotX * rotZ * resS);
-            resV.X /= resV.Z;// Nos regresamos a coordenadas cartesianas
-            resV.Y /= resV.Z;// Nos regresamos a coordenadas cartesianas
-            return resV;
-        }*/
 
     }
 }

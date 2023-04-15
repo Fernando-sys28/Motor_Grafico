@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Motor_Grafico
 {
-    /*public class Sphere:Mesh
+    public class Sphere
     {
-        /*public Sphere(float radius, int numSegments) {
+        public static Mesh SphereM(float radius, int numSegments) {
+
+            List<Vertex> vertices = new List<Vertex>();
+            List<triangulo> triangles = new List<triangulo>();
+
             for (int i = 0; i < numSegments + 1; i++)
             {
                 float latitud0 = (float)Math.PI * (-0.5f + (float)(i - 1) / numSegments);
@@ -43,15 +48,23 @@ namespace Motor_Grafico
                     if (i == 0) { }
                     else if (i == 1)
                     {
-                        triangulos.Add(new triangulo(v1, v3, v2));
+                        triangles.Add(new triangulo(0, 2, 1, Color.White));
+                        triangles.Add(new triangulo(1, 2, 3, Color.White));
                     }
                     else
                     {
-                       // triangulos.Add(new triangulo(v3, v2, v1));
-                        triangulos.Add(new triangulo(v2, v0, v1));
+                        triangles.Add(new triangulo(vertices.Count, vertices.Count + 2, vertices.Count + 1, Color.White));
+                        triangles.Add(new triangulo(vertices.Count + 1, vertices.Count + 2, vertices.Count, Color.White));
                     }
+
+                    vertices.Add(v0);
+                    vertices.Add(v1);
+                    vertices.Add(v2);
+                    vertices.Add(v3);
                 }
             }
+            Mesh mesh = new Mesh(vertices.ToArray(), triangles.ToArray());
+            return mesh;
         }
-    }*/
+    }
 }
