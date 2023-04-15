@@ -42,65 +42,68 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
         }
 
         private void Init()
-        {           
-            if (OpenObj)
-            {
-                canvas = new Canvas(pictureBox1.Size);
-                pictureBox1.Image = canvas.bitmap;
+        {
+            canvas = new Canvas(pictureBox1.Size);
+            pictureBox1.Image = canvas.bitmap;
 
-                Vertex[] vertices;
-                triangulo[] faces;
+            /* if (OpenObj)
+             {
+                 canvas = new Canvas(pictureBox1.Size);
+                 pictureBox1.Image = canvas.bitmap;
 
-                using (StreamReader reader = new StreamReader(filePath))
-                {
-                    List<Vertex> vertexList = new List<Vertex>();
-                    List<triangulo> faceList = new List<triangulo>();
+                 Vertex[] vertices;
+                 triangulo[] faces;
 
-                    while (!reader.EndOfStream)
-                    {
-                        string line = reader.ReadLine();
-                        // Leer la línea y procesar la información para obtener los vértices
-                        if (line.StartsWith("v "))
-                        {
-                            string[] vertexValues = line.Split(' ');
-                            float x = float.Parse(vertexValues[1]);
-                            float y = float.Parse(vertexValues[2]);
-                            float z = float.Parse(vertexValues[3]);
-                            Vertex vertex = new Vertex(x, y, z);
-                            vertexList.Add(vertex);
-                        }
-                        // Leer la línea y procesar la información para obtener las caras
-                        else if (line.StartsWith("f "))
-                        {
-                            string[] faceValues = line.Split(' ');
-                            // Asumiendo que las caras están definidas con índices de vértices en formato "f v1 v2 v3"
-                            int[] faceIndices = new int[3];
-                            for (int i = 0; i < 3; i++)
-                            {
-                                faceIndices[i] = int.Parse(faceValues[i + 1]) - 1; // Restar 1 para índices basados en 0
-                            }
-                            // Crear un objeto de la clase triangulo y asignar los índices y el color gris
-                            triangulo face = new triangulo(faceIndices[0], faceIndices[1], faceIndices[2], Color.Gray);
-                            faceList.Add(face);
-                        }
-                    }
+                 using (StreamReader reader = new StreamReader(filePath))
+                 {
+                     List<Vertex> vertexList = new List<Vertex>();
+                     List<triangulo> faceList = new List<triangulo>();
 
-                    vertices = vertexList.ToArray();
-                    faces = faceList.ToArray();
-                }
-                foreach (var item in vertices)
-                {
-                    Console.WriteLine(item);
-                }
-                cube = new Mesh(vertices, faces);
-                scena = new Scene[]{
-                               new Scene(cube, new Transform(1f,new Vertex( 1,    1,    8 ), Matrix.Identity))
-                               };
+                     while (!reader.EndOfStream)
+                     {
+                         string line = reader.ReadLine();
+                         // Leer la línea y procesar la información para obtener los vértices
+                         if (line.StartsWith("v "))
+                         {
+                             string[] vertexValues = line.Split(' ');
+                             float x = float.Parse(vertexValues[1]);
+                             float y = float.Parse(vertexValues[2]);
+                             float z = float.Parse(vertexValues[3]);
+                             Vertex vertex = new Vertex(x, y, z);
+                             vertexList.Add(vertex);
+                         }
+                         // Leer la línea y procesar la información para obtener las caras
+                         else if (line.StartsWith("f "))
+                         {
+                             string[] faceValues = line.Split(' ');
+                             // Asumiendo que las caras están definidas con índices de vértices en formato "f v1 v2 v3"
+                             int[] faceIndices = new int[3];
+                             for (int i = 0; i < 3; i++)
+                             {
+                                 faceIndices[i] = int.Parse(faceValues[i + 1]) - 1; // Restar 1 para índices basados en 0
+                             }
+                             // Crear un objeto de la clase triangulo y asignar los índices y el color gris
+                             triangulo face = new triangulo(faceIndices[0], faceIndices[1], faceIndices[2], Color.Gray);
+                             faceList.Add(face);
+                         }
+                     }
 
-                //canvas.Render(scena);
-            }
-            
-            /*Vertex[] vertices = new Vertex[] {
+                     vertices = vertexList.ToArray();
+                     faces = faceList.ToArray();
+                 }
+                 foreach (var item in vertices)
+                 {
+                     Console.WriteLine(item);
+                 }
+                 cube = new Mesh(vertices, faces);
+                 scena = new Scene[]{
+                                new Scene(cube, new Transform(1f,new Vertex( 1,    1,    8 ), Matrix.Identity))
+                                };
+
+                 //canvas.Render(scena);
+             }*/
+
+            Vertex[] vertices = new Vertex[] {
                                             new Vertex(1, 1, 1),
                                             new Vertex(-1, 1, 1),
                                             new Vertex(-1, -1, 1),
@@ -125,8 +128,12 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
                                             new triangulo(4, 1, 0, Color.Purple),
                                             new triangulo(2, 6, 7, Color.Cyan),
                                             new triangulo(2, 7, 3, Color.Cyan)
-                                           };*/
-            
+                                           };
+            cube = new Mesh(vertices, triangles);
+            scena = new Scene[]{
+                               new Scene(cube, new Transform(1f,new Vertex( 1,    1,    8 ), Matrix.Identity))
+                               };
+            canvas.Render(scena);
 
         }
 
@@ -140,7 +147,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
                 for (int i = 0; i < scena.Length; i++)
                 {
                     scena[i].transform.scale = deltaY;
-                    //scena[i].transform.traslation.X = deltaX;
+                    scena[i].transform.traslation.X = deltaX;
                 }
                 
             }
@@ -171,7 +178,8 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
         public void Draw()
         {
-            //canvas.FastClear();
+            canvas.FastClear();
+            canvas.Render(scena);
             if (filePath != null)
             {
                 //canvas.Render(scena);
@@ -268,7 +276,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
         {
             if (mouseDown)
             {
-                deltaX += (float)(e.Location.X - ptX.X) / 2;
+                deltaX += (float)(e.Location.X - ptX.X) / 300;
                 ptX.X = e.Location.X;
             }
         }
