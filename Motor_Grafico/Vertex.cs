@@ -60,6 +60,8 @@ namespace Motor_Grafico
             return new Vertex(v1.X * b, v1.Y * b, v1.Z * b);
         }
 
+      
+
     }
 
 }

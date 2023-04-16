@@ -23,5 +23,7 @@ namespace Motor_Grafico
             this.transform = transform;
 
         }
+
+        
     }
 }

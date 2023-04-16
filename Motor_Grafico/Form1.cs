@@ -16,7 +16,6 @@ namespace Motor_Grafico
 {
     public partial class Form1 : Form
     {
-        //Graphics graphic;
         Scene[] scena;
         Canvas canvas;
         TreeNode selectedNode;
@@ -43,6 +42,7 @@ namespace Motor_Grafico
         float angle = 0;
 
         string filePath;
+
         public Form1()
         {
             InitializeComponent();
@@ -65,28 +65,28 @@ namespace Motor_Grafico
                     selectedScene.transform.traslation.X = deltaX;
                     selectedScene.transform.traslation.Y = TrasladarY;
                     selectedScene.transform.traslation.Z = TrasladarZ;
-                }
-                
-                
+
+                    if (RX == true)
+                    {
+                        selectedScene.transform.rotation = Matrix.RotX(angle++);
+                    }
+                    if (RY == true)
+                    {
+                        selectedScene.transform.rotation = Matrix.RotY(angle++);
+                    }
+                    if (RZ == true)
+                    {
+                        selectedScene.transform.rotation = Matrix.RotZ(angle++);
+                    }
+                    if (RX == true && RY == true && RZ == true)
+                    {
+                        Matrix combinedRotation = Matrix.RotX(angle) * Matrix.RotY(angle) * Matrix.RotZ(angle);
+                        selectedScene.transform.rotation = combinedRotation;
+                        angle++;
+                    }
+                }             
             }
-            if (RX == true)
-            {
-                selectedScene.transform.rotation = Matrix.RotX(angle++);
-            }
-            if (RY == true)
-            {
-                selectedScene.transform.rotation = Matrix.RotY(angle++);
-            }
-            if (RZ == true)
-            {
-                selectedScene.transform.rotation = Matrix.RotZ(angle++);
-            }
-            if (RX == true && RY == true && RZ == true)
-            {
-                Matrix combinedRotation = Matrix.RotX(angle) * Matrix.RotY(angle) * Matrix.RotZ(angle);
-                selectedScene.transform.rotation = combinedRotation;
-                angle++;
-            }
+            
             pictureBox1.Invalidate();
         }
 
@@ -158,23 +158,32 @@ namespace Motor_Grafico
                     else if (line.StartsWith("f "))
                     {
                         string[] faceValues = line.Split(' ');
-                        int[] faceIndices = new int[3];
-                        for (int j = 0; j < 3; j++)
+                        List<int> faceIndices = new List<int>();
+                        for (int j = 0; j < faceValues.Length; j++)
                         {
-                            string[] vertexIndexValues = faceValues[j + 1].Split('/');
-                            faceIndices[j] = int.Parse(vertexIndexValues[0]) - 1; // Restar 1 para índices basados en 0
+                            string[] vertexIndexValues = faceValues[j].Split('/');
+                            int vertexIndex;
+                            if (int.TryParse(vertexIndexValues[0], out vertexIndex))
+                            {
+                                vertexIndex--; // Restar 1 para índices basados en 0
+                                faceIndices.Add(vertexIndex);
+                            }
                         }
-                        // Crear un objeto de la clase triangulo y asignar los índices y el color gris
-                        triangulo face = new triangulo(faceIndices[0], faceIndices[1], faceIndices[2], Color.White);
-                        faceList.Add(face);
+
+                        // Crear caras triangulares a partir de los índices obtenidos
+                        for (int i = 1; i < faceIndices.Count - 1; i++)
+                        {
+                            triangulo face = new triangulo(faceIndices[0], faceIndices[i], faceIndices[i + 1], Color.White);
+                            faceList.Add(face);
+                        }
                     }
                 }
-
                 vertices = vertexList.ToArray();
                 faces = faceList.ToArray();
             }
             NuevoMesh(vertices, faces);
         }
+
         private void button5_Click(object sender, EventArgs e)
         {
             Mesh cubo;
@@ -404,7 +413,6 @@ namespace Motor_Grafico
         {
             selectedNode = e.Node;
             selectedScene = (Scene)selectedNode.Tag;
-
         }
         private void NuevoMesh(Vertex[] vertices, triangulo[] triangulos)
         {
@@ -419,7 +427,7 @@ namespace Motor_Grafico
             Array.Resize(ref scena, scena.Length + 1);
 
             // Asignar el nuevo mesh al último índice del arreglo
-            scena[scena.Length - 1] = new Scene(mesh, new Transform(1f, new Vertex(0, 0, 8), Matrix.Identity));
+            scena[scena.Length - 1] = new Scene(mesh, new Transform(1f, new Vertex(0, 0, 10), Matrix.Identity));
 
             if (scena != null)
             {

@@ -261,7 +261,7 @@ namespace Motor_Grafico
             
         }
 
-        public void DrawShadedTriangle(PointF a, PointF b, PointF d, Color c)
+        public void DrawShadedTriangle(Vertex a, Vertex b, Vertex d, Color c)
         {
             Point p0 = new Point(), p1 = new Point(), p2 = new Point();
             p0.X = (int)a.X;
@@ -314,35 +314,46 @@ namespace Motor_Grafico
             h012.AddRange(h12);
 
             int m = x02.Count / 2;
-            if (x02[m] < x012[m])
+            if (m >= 0 && m < x02.Count && m < x012.Count)
             {
-                x_left = x02;
-                x_right = x012;
-
-                h_left = h02;
-                h_right = h012;
-            }
-            else
-            {
-                x_left = x012;
-                x_right = x02;
-
-                h_left = h012;
-                h_right = h02;
-            }
-
-            for (int y = p0.Y; y < p2.Y; y++)
-            {
-                float x_l = x_left[y - p0.Y];
-                float x_r = x_right[y - p0.Y];
-                List<float> h_segment = Interpolate(x_l, h_left[y - p0.Y], x_r, h_right[y - p0.Y]);
-                for (float x = x_left[y - p0.Y]; x < x_right[y - p0.Y]; x++)
+                if (x02[m] < x012[m])
                 {
-                    Color shaded_color = Color.FromArgb((int)(c.R * h_segment[(int)(x - x_l)]), (int)(c.G * h_segment[(int)(x - x_l)]), (int)(c.B * h_segment[(int)(x - x_l)]));
-                    DrawPixel((int)x, y, shaded_color);
+                    x_left = x02;
+                    x_right = x012;
+
+                    h_left = h02;
+                    h_right = h012;
+                }
+                else
+                {
+                    x_left = x012;
+                    x_right = x02;
+
+                    h_left = h012;
+                    h_right = h02;
+                }
+
+                for (int y = p0.Y; y < p2.Y; y++)
+                {
+                    float x_l = x_left[y - p0.Y];
+                    float x_r = x_right[y - p0.Y];
+                    List<float> h_segment = Interpolate(x_l, h_left[y - p0.Y], x_r, h_right[y - p0.Y]);
+
+                    for (float x = x_left[y - p0.Y]; x < x_right[y - p0.Y]; x++)
+                    {
+                        // Aplicar límites a x para asegurarse de que esté dentro del rango válido
+                        float clamped_x = Math.Max(x, x_l);
+                        clamped_x = Math.Min(clamped_x, x_r-1);
+
+                        int index = (int)Math.Round(clamped_x - x_l);
+                        if (index >= 0 && index < h_segment.Count)
+                        {
+                            Color shaded_color = Color.FromArgb((int)(c.R * h_segment[index]), (int)(c.G * h_segment[index]), (int)(c.B * h_segment[index]));
+                            DrawPixel((int)x, y, shaded_color);
+                        }
+                    }
                 }
             }
-
         }
 
 
@@ -364,7 +375,7 @@ namespace Motor_Grafico
 
             if (pintar)
             {
-                FillTriangle(projected[triangle.a], projected[triangle.b], projected[triangle.c],Color.LightBlue);          
+                DrawShadedTriangle(projected[triangle.a], projected[triangle.b], projected[triangle.c],Color.LightBlue);          
             }
         }
 
