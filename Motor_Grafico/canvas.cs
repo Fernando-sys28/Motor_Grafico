@@ -26,7 +26,9 @@ namespace Motor_Grafico
 
         float[,] m;
 
-        public Camara camera = new Camara(new Vertex(0, 0, 0), Matrix.RotY(0));
+        public float a { get; set; }
+
+        public Camara camera = new Camara(new Vertex(-1, -1, -1), Matrix.RotY(0));
         public bool pintar { get; set; }
         public Canvas(Size size)
         {
@@ -53,7 +55,7 @@ namespace Motor_Grafico
             bitPtr = Marshal.UnsafeAddrOfPinnedArrayElement(bits, 0);
             bitmap = new Bitmap(width, height, stride, format, bitPtr);
             g = Graphics.FromImage(bitmap);
-
+            a = 120;
             
         }
 
@@ -61,9 +63,8 @@ namespace Motor_Grafico
         {
             RenderScene(camera, scena);
         }
-        public Matrix POV()
+        public Matrix FOV()
         {
-            float a = 120; // aperture DEGREES
             float r = 1; // aspecto ratio
             float zNear = 1f;
             float zFar = 10000;
@@ -299,9 +300,9 @@ namespace Motor_Grafico
             List<float> x12 = Interpolate(p1.Y, p1.X, p2.Y, p2.X);
             List<float> x02 = Interpolate(p0.Y, p0.X, p2.Y, p2.X);
 
-            List<float> h01 = Interpolate(p0.Y, 1, p1.Y, 0);
-            List<float> h12 = Interpolate(p1.Y, 0, p2.Y, 0);
-            List<float> h02 = Interpolate(p0.Y, 1, p2.Y, 0);
+            List<float> h01 = Interpolate(p0.Y, 1, p1.Y, 1);
+            List<float> h12 = Interpolate(p1.Y, 1, p2.Y, 1);
+            List<float> h02 = Interpolate(p0.Y, 1, p2.Y, 1);
 
             x01.RemoveAt(x01.Count - 1);
             List<float> x012 = new List<float>();
@@ -404,7 +405,7 @@ namespace Motor_Grafico
             Matrix transform;
 
             // if we want to use FOV here we also need to add the FOV matrix of the camera
-            cameraMatrix = (camera.orientation.Transposed()) * Matrix.MakeTranslationMatrix(-camera.position) * POV();
+            cameraMatrix = (FOV()* camera.orientation.Transposed()) * Matrix.MakeTranslationMatrix(-camera.position);
             for (int i = 0; i < instances.Length; i++)
             {
                 transform = (cameraMatrix * instances[i].transform.transform());

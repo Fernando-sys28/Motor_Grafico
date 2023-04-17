@@ -37,11 +37,14 @@ namespace Motor_Grafico
         float CamaraZ = 0;
 
         float TrasladarY = 0;
-        float TrasladarZ = 8;
+        float TrasladarZ = 10;
 
         float angle = 0;
 
         string filePath;
+
+        bool stop = false;
+        float FOV;
 
         public Form1()
         {
@@ -59,13 +62,15 @@ namespace Motor_Grafico
                 canvas.camera.position.X = CamaraX;
                 canvas.camera.position.Y = CamaraY;
                 canvas.camera.position.Z = CamaraZ;
-                if(selectedScene != null)
+                
+
+                if (selectedScene != null)
                 {
                     selectedScene.transform.scale = deltaY;
                     selectedScene.transform.traslation.X = deltaX;
                     selectedScene.transform.traslation.Y = TrasladarY;
                     selectedScene.transform.traslation.Z = TrasladarZ;
-
+                    
                     if (RX == true)
                     {
                         selectedScene.transform.rotation = Matrix.RotX(angle++);
@@ -84,6 +89,11 @@ namespace Motor_Grafico
                         selectedScene.transform.rotation = combinedRotation;
                         angle++;
                     }
+                    if (RX == false && RY == false  && RZ == false && stop==true)
+                    {
+                        selectedScene.transform.rotation = Matrix.Identity;
+                       
+                    }
                 }             
             }
             
@@ -93,16 +103,23 @@ namespace Motor_Grafico
 
         public void Draw()
         {
-           
             if (mesh != null)
             {
                 canvas.FastClear();
-                canvas.Render(scena);
+                canvas.Render(scena);          
             }
-
-
         }
-         
+        private void button11_Click(object sender, EventArgs e)
+        {
+            if (scena != null)
+            {
+                FOV = float.Parse(textBox1.Text);
+                canvas.a = FOV;
+                Draw();
+            }
+            
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             RX = true;
@@ -229,10 +246,10 @@ namespace Motor_Grafico
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+            this.MaximumSize = SystemInformation.PrimaryMonitorMaximizedWindowSize;
+            this.WindowState = FormWindowState.Maximized;
         }
 
-        
         private void trackBar1_MouseDown(object sender, MouseEventArgs e)
         {
             ptX = e.Location;
@@ -243,7 +260,7 @@ namespace Motor_Grafico
         {
             if (mouseDown)
             {
-               deltaX += (float)(e.Location.X - ptX.X) / 300;
+               deltaX += (float)(e.Location.X - ptX.X) / 150;
                ptX.X = e.Location.X;
             }
         }
@@ -252,7 +269,6 @@ namespace Motor_Grafico
             mouseDown = false;
             traslationsXScroll.Value = 0; //Regresa al centro cuando lo soltemos
         }
-
 
         private void trackBar2_MouseDown(object sender, MouseEventArgs e)
         {
@@ -315,7 +331,7 @@ namespace Motor_Grafico
         {
             if (mouseDownY)
             {
-                CamaraY += (float)(ptY.Y - e.Location.Y) / 300;//------------------
+                CamaraY += (float)(ptY.Y - e.Location.Y) / 200;//------------------
                 ptY.Y = e.Location.Y;
             }
         }
@@ -336,7 +352,7 @@ namespace Motor_Grafico
         {
             if (mouseDownY)
             {
-                CamaraZ += (float)(ptY.Y - e.Location.Y) / 300;//------------------
+                CamaraZ += (float)(ptY.Y - e.Location.Y) / 200;//------------------
                 ptY.Y = e.Location.Y;
             }
         }
@@ -357,7 +373,7 @@ namespace Motor_Grafico
         {
             if (mouseDownY)
             {
-                TrasladarY += (float)(ptY.Y - e.Location.Y) / 300;//------------------
+                TrasladarY += (float)(ptY.Y - e.Location.Y) / 150;//------------------
                 ptY.Y = e.Location.Y;
             }
         }
@@ -378,7 +394,7 @@ namespace Motor_Grafico
         {
             if (mouseDownY)
             {
-                TrasladarZ += (float)(ptY.Y - e.Location.Y) / 300;//------------------
+                TrasladarZ += (float)(ptY.Y - e.Location.Y) / 150;//------------------
                 ptY.Y = e.Location.Y;
             }
         }
@@ -413,7 +429,17 @@ namespace Motor_Grafico
         {
             selectedNode = e.Node;
             selectedScene = (Scene)selectedNode.Tag;
+
         }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            RX = false;
+            RY = false;
+            RZ = false;
+            stop = true;
+        }
+       
         private void NuevoMesh(Vertex[] vertices, triangulo[] triangulos)
         {
             mesh = new Mesh(vertices, triangulos);
@@ -431,15 +457,15 @@ namespace Motor_Grafico
 
             if (scena != null)
             {
-                // Cargar escenas en el TreeView
-                TreeNode rootNode = new TreeNode("Escenas");
+                // Limpiar los nodos existentes en el TreeView
+                treeView1.Nodes.Clear();
+
                 for (int i = 0; i < scena.Length; i++)
                 {
                     TreeNode node = new TreeNode("Escena " + (i + 1));
                     node.Tag = scena[i]; // Guardar una referencia a la escena en la propiedad Tag del nodo
-                    rootNode.Nodes.Add(node);
+                    treeView1.Nodes.Add(node);
                 }
-                treeView1.Nodes.Add(rootNode);
             }
 
             canvas.Render(scena);

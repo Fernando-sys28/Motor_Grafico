@@ -48,13 +48,13 @@ namespace Motor_Grafico
                     if (i == 0) { }
                     else if (i == 1)
                     {
-                        triangles.Add(new triangulo(0, 2, 1, Color.White));
+                        triangles.Add(new triangulo(2, 1, 3, Color.White));
                         triangles.Add(new triangulo(1, 2, 3, Color.White));
                     }
                     else
                     {
                         triangles.Add(new triangulo(vertices.Count, vertices.Count + 2, vertices.Count + 1, Color.White));
-                        triangles.Add(new triangulo(vertices.Count + 1, vertices.Count + 2, vertices.Count, Color.White));
+                        triangles.Add(new triangulo(vertices.Count + 2, vertices.Count+1, vertices.Count+3, Color.White));
                     }
 
                     vertices.Add(v0);
